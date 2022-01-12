@@ -14,7 +14,7 @@ public class Pelaaja {
         this.nimi = nimi;
         panos = 0;
         saldo = 0;
-        kasi = new ArrayList<Kortti>(List.of(new Kortti(Maa.PATA, Arvo.ÄSSÄ), new Kortti(Maa.PATA, Arvo.KAKSI), new Kortti(Maa.PATA, Arvo.KOLME), new Kortti(Maa.PATA, Arvo.NELJÄ), new Kortti(Maa.HERTTA, Arvo.KUUSI)));
+        kasi = alustaKasi();
     }
 
     public Pelaaja() {
@@ -52,6 +52,16 @@ public class Pelaaja {
 
     public Kortti getKortti(int i) {
         return kasi.get(i);
+    }
+
+    public ArrayList<Kortti>alustaKasi() {
+        ArrayList<Kortti> kasi = new ArrayList<Kortti>(List.of(
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI)));
+        return kasi;
     }
 
     public void tulostaKasi() {

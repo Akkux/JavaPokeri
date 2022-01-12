@@ -1,0 +1,51 @@
+[ {
+  "nimi" : "Fakiiri",
+  "saldo" : 9978,
+  "panos" : 7,
+  "kasi" : [ {
+    "maa" : "RUUTU",
+    "arvo" : "KUNINGATAR",
+    "numeroarvo" : 12
+  }, {
+    "maa" : "RISTI",
+    "arvo" : "ÄSSÄ",
+    "numeroarvo" : 14
+  }, {
+    "maa" : "HERTTA",
+    "arvo" : "ÄSSÄ",
+    "numeroarvo" : 14
+  }, {
+    "maa" : "HERTTA",
+    "arvo" : "KUNINGAS",
+    "numeroarvo" : 13
+  }, {
+    "maa" : "HERTTA",
+    "arvo" : "KUNINGATAR",
+    "numeroarvo" : 12
+  } ]
+}, {
+  "nimi" : "Eemil",
+  "saldo" : 30,
+  "panos" : 30,
+  "kasi" : [ {
+    "maa" : "PATA",
+    "arvo" : "ÄSSÄ",
+    "numeroarvo" : 14
+  }, {
+    "maa" : "RISTI",
+    "arvo" : "KUNINGATAR",
+    "numeroarvo" : 12
+  }, {
+    "maa" : "RUUTU",
+    "arvo" : "YHDEKSÄN",
+    "numeroarvo" : 9
+  }, {
+    "maa" : "RUUTU",
+    "arvo" : "JÄTKÄ",
+    "numeroarvo" : 11
+  }, {
+    "maa" : "HERTTA",
+    "arvo" : "KUNINGAS",
+    "numeroarvo" : 13
+  } ]
+} ]

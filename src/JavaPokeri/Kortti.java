@@ -35,8 +35,14 @@ class Kortti {
 
     @Override
     public String toString() {
-        if (arvo.symboli == "JOKERI") {
-            return maa.symboli + " JOKERI";
+        if (maa.symboli == "JOKERI") {
+            return maa.symboli;
+        } if (maa.symboli == "PATA") {
+            return "  " + maa.symboli + " " + arvo.symboli;
+        } if (maa.symboli == "RISTI") {
+            return " " + maa.symboli + " " + arvo.symboli;
+        } if (maa.symboli == "RUUTU") {
+            return " " + maa.symboli + " " + arvo.symboli;
         }
         return  maa.symboli + " " + arvo.symboli;
     }
