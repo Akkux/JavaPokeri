@@ -3,7 +3,7 @@ package JavaPokeri;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -41,22 +41,28 @@ public class Kayttoliittyma {
     // -oma tulostaulukko
     // -pelimuodon valinta
     // -+muuta korjailua ja parantelua
-    // -        commit3 versio 1.5 (tekemättä)
+    // -        commit3 versio 1.5
+    // -ei enää json
+    // -pelaajatiedot.ser
+    // -saavutusten alustus muutettu
+    // -pelaajalle yhteisvoitot attribuutti
+    // -        commit4 versio 1.6
+    // -lisätty yhteisvoitot, yhteishäviöt
+    // -palautusprosentti
+    // -voitetut ja hävityt jaot
+
+
     //pelaajalistassa ei ehkä tarvitse tallentaa kättä
     //lisää kommentointi tarvittaviin metodeihin
     //korjaa metodien näkyvyydet
     //lisää mahdollisuus kahden tai useamman pelaajan pelimuotoon, jossa korotetaan panosta ja pelataan muita vastaan
     //-pikapokeri pelimuoto
+    // moikka tämä on verio 1.5.2
 
 
     //-vapaapelissä täytyy kerätä kolikoita jotta voi mennä kilpapeliin. Kilpapeli maksaa 200 kolikkoa
     //-vapaapelissä kolikkoja saa vähintään käden kertoimen verran jos panos on 0, alussa saldo aina nolla
-    //-tekaise leaderboardit, johon hauskoja nimiä
-    //-Nahka-Lasse, Erno, NPC-Janne, Jari-Matti, Ryyni-Late, KKoonnssttaa, Anil, Srinivasa, David Patterson, Jean Baptiste Joseph Fourier
-    //-sitten pelaaja voi avata saavutuksia, kuten "Voita Nahka-Lasse"
-    //-pelaajan omien saavutusten taulukko, jossa ????? tilalle tulee saatu saavutus
     //-kilpapelin muoto joka kalliimpi ja jossa paljon jokereita
-    //-kovakoodaa ohjelmaan hall of famen feikkikäyttäjät ja luo aina listaa tarkastellessa lista uudestaan luomalla tupleja pelaajatiedoista
     //-kerätään dataa esim. jokaisen pelaajan voitoista, voittokäsien arvoista, yhteisvoitoista jne.
     //-tämä on master branch
 
@@ -64,7 +70,7 @@ public class Kayttoliittyma {
     /** Tallennetaan pelaajan tiedot JSON-tiedostoon, jotta peliä voidaan jatkaa
         siitä mihin jäätiin. */
     public static void tallennus(Pelaaja pelaaja) {
-        // Haetaan JSON-tiedostosta pelaajien tiedot pelaajalistaan, jotta tietoja on helppo käsitellä.
+        // Haetaan tallennustiedostostaa pelaajien tiedot pelaajalistaan, jotta tietoja on helppo käsitellä.
         ArrayList<Pelaaja> pelaajalista = haePelaajalista();
         ArrayList<Pelaaja> pelaajalistaKopio = haePelaajalista();
         // Päivitetään olemassaolevan pelaajan tiedot tai lisätään uusi pelaaja. Käytetään apuna listaa
@@ -86,11 +92,13 @@ public class Kayttoliittyma {
             pelaajalista.add(pelaaja);
         }
 
-        // Kirjoitetaan muutokset JSON-tiedostoon
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        // Kirjoitetaan muutokset tallennustiedostoon
         try {
-            mapper.writeValue(new File("pelaajatiedot.json"), pelaajalista );
+            FileOutputStream fos = new FileOutputStream("pelaajatiedot.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(pelaajalista);
+            oos.close();
+            fos.close();
         } catch (Exception e) {
             System.out.println(e);
             System.out.println();
@@ -99,15 +107,22 @@ public class Kayttoliittyma {
     }
 
 
-    /** Metodi hakee ja palauttaa JSON-tiedoston sisällön tai tyhjän listan jos pelaajia ei vielä ole. */
+    /** Metodi hakee ja palauttaa tallennustiedoston sisällön tai tyhjän listan jos pelaajia ei vielä ole. */
     public static ArrayList<Pelaaja> haePelaajalista() {
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ArrayList<Pelaaja> pelaajalista = new ArrayList<>();
+        ArrayList<Pelaaja> tyhjaPelaajalista = new ArrayList<>();
+
         try {
-            ArrayList<Pelaaja> haettuPelaajalista = mapper.readValue(new File("pelaajatiedot.json"), new TypeReference<ArrayList<Pelaaja>>(){});
-            return haettuPelaajalista;
-        } catch (Exception e) {
-            ArrayList<Pelaaja> tyhjaPelaajalista = new ArrayList<>();
+            FileInputStream fis = new FileInputStream("pelaajatiedot.ser");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            pelaajalista = (ArrayList) ois.readObject();
+            ois.close();
+            fis.close();
+            return pelaajalista;
+
+        } catch (IOException ioe) {
+            return tyhjaPelaajalista;
+        }  catch (ClassNotFoundException c) {
             return tyhjaPelaajalista;
         }
 
@@ -117,10 +132,12 @@ public class Kayttoliittyma {
         ArrayList<Pelaaja> pelaajalista = haePelaajalista();
         pelaajalista.remove(indeksi);
 
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            mapper.writeValue(new File("pelaajatiedot.json"), pelaajalista );
+            FileOutputStream fos = new FileOutputStream("pelaajatiedot.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(pelaajalista);
+            oos.close();
+            fos.close();
         } catch (Exception e) {
             System.out.println(e);
             System.out.println();
@@ -350,7 +367,6 @@ public class Kayttoliittyma {
             try {
                 if (input.equals("V")) {
                     System.out.println();
-                    //System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo());
                     uudestaan = false;
                     vetopokeriVapaapeli(pelaaja);
                 } else if (input.equals("K")) {
@@ -382,27 +398,13 @@ public class Kayttoliittyma {
                             "VETOPOKERI: Vapaapeli\n" +
                             "Saldo: " + pelaaja.getSaldo() + " kolikkoa\n" +
                             "('P')  Pelaa\n" +
-                            //"('N')  Näytä saldo\n" +
                             "('T')  Takaisin");
             System.out.print("Valitse syöttämällä kirjain: ");
             String input = lukija.nextLine();
             try {
                 if (input.equals("P")) {
                     uusiVapaaPeli(pelaaja);
-                } /*else if (input.equals("S")) {
-                    System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo() + " kolikkoa");
-                    System.out.println();
-                } /*else if (input.equals("T")) {
-                    System.out.print("Talletettavien kolikoiden määrä: ");
-                    int maara = Integer.valueOf(lukija.nextLine());
-                    if (maara >= 0) {
-                        pelaaja.setSaldo(maara + pelaaja.getSaldo());
-                        System.out.println("Uusi saldo: " + pelaaja.getSaldo() + " kolikkoa");
-                        System.out.println();
-                    } else {
-                        throw new CustomException("Negatiivinen talletus!");
-                    }
-                }*/ else if (input.equals("T")) {
+                } else if (input.equals("T")) {
                     uudestaan = false;
                     System.out.println();
                     vetopokeriValinta(pelaaja);
@@ -802,7 +804,7 @@ public class Kayttoliittyma {
         System.out.println("Pelaaja: " + pelaaja.getNimi());
         System.out.println("--- SAAVUTUKSET ---");
         for (int i = 0; i < 30; i++) {
-            if (!(saavutukset.get(i).equals("?????"))) {
+            if (!(saavutukset.get(i).equals("?"))) {
                 String saavutus = saavutukset.get(i);
                 int saavutuksenMerkkimaara = saavutus.length();
                 System.out.print(saavutukset.get(i));
@@ -811,44 +813,22 @@ public class Kayttoliittyma {
                 }
                 saavutuksenKuvaus(String.valueOf(i));
             } else {
-                System.out.println(pelaaja.getSaavutukset().get(i));
+                System.out.println("?????");
             }
         }
         System.out.println();
+        System.out.println("Voitot yhteensä: " + pelaaja.getYhteisvoitot() + " kolikkoa");
+        System.out.println("Häviöt yhteensä: " + pelaaja.getYhteishaviot() + " kolikkoa");
+        Double palautusprosentti = 0.00;
+        if (pelaaja.getYhteishaviot() > 0) {
+            palautusprosentti = Double.valueOf(pelaaja.getYhteisvoitot()/ pelaaja.getYhteishaviot()*100);
+        }
+        System.out.println("Palautusprosentti: " + palautusprosentti + "%");
+        System.out.println("Voitetut jaot: " + pelaaja.getVoitetutJaot());
+        System.out.println("Hävityt jaot: " + pelaaja.getHavitytJaot());
+        System.out.println();
+        System.out.println();
     }
-
-    /*public static void saavutuksenKuvaus(String i) {
-            if  (i.equals("0")) {System.out.println("Päihitä Nahka-Lasse vetopokerin kilpapelissä");}
-            if  (i.equals("1")) {System.out.println("Päihitä NPC-Janne vetopokerin kilpapelissä");}
-            if  (i.equals("2")) {System.out.println("Päihitä Anil vetopokerin kilpapelissä");}
-            if  (i.equals("3")) {System.out.println("Päihitä Erno vetopokerin kilpapelissä");}
-            if  (i.equals("4")) {System.out.println("Päihitä Jytäpojat vetopokerin kilpapelissä");}
-            if  (i.equals("5")) {System.out.println("Päihitä Srinivasa vetopokerin kilpapelissä");}
-            if  (i.equals("6")) {System.out.println("Päihitä Levrai vetopokerin kilpapelissä");}
-            if  (i.equals("7")) {System.out.println("Päihitä Jari-Matti vetopokerin kilpapelissä");}
-            if  (i.equals("8")) {System.out.println("Päihitä David Patterson vetopokerin kilpapelissä");}
-            if  (i.equals("9")) {System.out.println("Päihitä Jean Baptiste Joseph Fourier vetopokerin kilpapelissä");}
-            if  (i.equals("10")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kuningasvärisuora");}
-            if  (i.equals("11")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on viitoset");}
-            if  (i.equals("12")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on värisuora");}
-            if  (i.equals("13")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on neloset");}
-            if  (i.equals("14")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on täyskäsi");}
-            if  (i.equals("15")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on väri");}
-            if  (i.equals("16")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on suora");}
-            if  (i.equals("17")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kolmoset");}
-            if  (i.equals("18")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kaksi paria");}
-            if  (i.equals("19")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on 10-A pari");}
-            if  (i.equals("20")) {System.out.println("Voita yhdellä pokerikädellä 100000 kolikkoa");}
-            if  (i.equals("21")) {System.out.println("Voita yhdellä pokerikädellä 50000 kolikkoa");}
-            if  (i.equals("22")) {System.out.println("Voita yhdellä pokerikädellä 10000 kolikkoa");}
-            if  (i.equals("23")) {System.out.println("Voita yhdellä pokerikädellä 5000 kolikkoa");}
-            if  (i.equals("24")) {System.out.println("Voita yhdellä pokerikädellä 1000 kolikkoa");}
-            if  (i.equals("25")) {System.out.println("Voita yhdellä pokerikädellä 750 kolikkoa");}
-            if  (i.equals("26")) {System.out.println("Voita yhdellä pokerikädellä 500 kolikkoa");}
-            if  (i.equals("27")) {System.out.println("Voita yhdellä pokerikädellä 200 kolikkoa");}
-            if  (i.equals("28")) {System.out.println("Voita yhdellä pokerikädellä 100 kolikkoa");}
-            if  (i.equals("29")) {System.out.println("Voita yhdellä pokerikädellä 20 kolikkoa");}
-    }*/
 
     public static void saavutuksenKuvaus(String i) {
         switch (i) {
@@ -885,26 +865,4 @@ public class Kayttoliittyma {
         }
     }
 
-    /*
-    Kuningasvärisuora  250 * panos\n" +
-                        "   Viitoset           250 * panos\n" +
-                        "   Värisuora           75 * panos\n" +
-                        "   Neloset             50 * panos\n" +
-                        "   Täyskäsi            20 * panos\n" +
-                        "   Väri                15 * panos\n" +
-                        "   Suora               10 * panos\n" +
-                        "   Kolmoset             5 * panos\n" +
-                        "   Kaksi paria          3 * panos\n" +
-                        "   10-A pari            2 * panos\n" + "\n" +
-    halloffameTulokset.add(new Kilpapelitulos("Nahka-Lasse", 99999));
-        halloffameTulokset.add(new Kilpapelitulos("NPC-Janne", 69420));
-        halloffameTulokset.add(new Kilpapelitulos("Anil", 31415));
-        halloffameTulokset.add(new Kilpapelitulos("Erno", 12345));
-        halloffameTulokset.add(new Kilpapelitulos("Jytäpojat", 4999));
-        halloffameTulokset.add(new Kilpapelitulos("Srinivasa", 2021));
-        halloffameTulokset.add(new Kilpapelitulos("Levrai", 1357));
-        halloffameTulokset.add(new Kilpapelitulos("Jari-Matti", 987));
-        halloffameTulokset.add(new Kilpapelitulos("David Patterson", 444));
-        halloffameTulokset.add(new Kilpapelitulos("Jean Baptiste Joseph Fourier", 2));
-     */
 }
