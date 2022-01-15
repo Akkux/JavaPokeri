@@ -47,6 +47,7 @@ public class Kayttoliittyma {
     //korjaa metodien näkyvyydet
     //lisää mahdollisuus kahden tai useamman pelaajan pelimuotoon, jossa korotetaan panosta ja pelataan muita vastaan
     //-pikapokeri pelimuoto
+    // moikka tämä on verio 1.5.2
 
     //-vapaapelissä täytyy kerätä kolikoita jotta voi mennä kilpapeliin. Kilpapeli maksaa 200 kolikkoa
     //-vapaapelissä kolikkoja saa vähintään käden kertoimen verran jos panos on 0, alussa saldo aina nolla
