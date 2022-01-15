@@ -22,8 +22,4 @@ public class Kilpapelitulos implements Comparable<Kilpapelitulos>{
         return (this.pisteet).compareTo(o.getPisteet());
     }
 
-    /*@Override
-    public String toString() {
-        return x + "  " + y;
-    }*/
 }

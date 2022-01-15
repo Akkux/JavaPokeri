@@ -1,6 +1,8 @@
 package JavaPokeri;
 
-class Kortti {
+import java.io.Serializable;
+
+class Kortti implements Serializable {
 
     private Maa maa;
     private Arvo arvo;
