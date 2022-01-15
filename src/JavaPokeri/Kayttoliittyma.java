@@ -11,11 +11,7 @@ import java.util.Scanner;
 public class Kayttoliittyma {
 
 
-    //Tallennusmahdollisuus muuttaa hieman pelin ideaa:
-    //Anna valmis aloituspanos jolloin lisää tallettaminen ei mahdollista
-    //Pistelista, jossa näkyy suurimmat saldot
-    //Joko loputtomasti jakoja tai esim. vain 10 jakoa (jolloin tavoitteena saada niiden aikana mahdollisimman suuri saldo)
-    //Ehkä maksimipanos ja muut valmiit panosmäärät
+    /** branch master**/
 
     //TODO:
     // -käyttäjän vaihto
@@ -50,6 +46,7 @@ public class Kayttoliittyma {
     // -lisätty yhteisvoitot, yhteishäviöt
     // -palautusprosentti
     // -voitetut ja hävityt jaot
+    // -        commit5 versio 1.7
 
 
     //pelaajalistassa ei ehkä tarvitse tallentaa kättä
@@ -57,7 +54,7 @@ public class Kayttoliittyma {
     //korjaa metodien näkyvyydet
     //lisää mahdollisuus kahden tai useamman pelaajan pelimuotoon, jossa korotetaan panosta ja pelataan muita vastaan
     //-pikapokeri pelimuoto
-    // moikka tämä on verio 1.5.2
+    // moikka tämä on verio 1.5.2  
 
 
     //-vapaapelissä täytyy kerätä kolikoita jotta voi mennä kilpapeliin. Kilpapeli maksaa 200 kolikkoa
