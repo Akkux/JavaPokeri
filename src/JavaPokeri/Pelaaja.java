@@ -16,6 +16,9 @@ public class Pelaaja implements Serializable {
     private int viimeisinVoitto;
     private int viimeisinKadenArvo;
     private int yhteisvoitot;
+    private int yhteishaviot;
+    private int voitetutJaot;
+    private int havitytJaot;
 
     public Pelaaja(String nimi) {
         this.nimi = nimi;
@@ -93,6 +96,26 @@ public class Pelaaja implements Serializable {
 
     public int getViimeisinKadenArvo() {
         return viimeisinKadenArvo;
+    }
+
+    public int getYhteisvoitot() {
+        return yhteisvoitot;
+    }
+
+    public void setYhteisvoitot(int yhteisvoitot) {
+        this.yhteisvoitot = yhteisvoitot;
+    }
+
+    public int getYhteishaviot() {
+        return yhteishaviot;
+    }
+
+    public int getVoitetutJaot() {
+        return voitetutJaot;
+    }
+
+    public int getHavitytJaot() {
+        return havitytJaot;
     }
 
     public ArrayList<Kortti> alustaKasi() {
@@ -267,17 +290,7 @@ public class Pelaaja implements Serializable {
     public void kadenTarkistus(String pelimuoto) {
         ArrayList<Maa> kasiMaat = new ArrayList<>();
         ArrayList<Integer> kasiArvot = new ArrayList<>();
-        /*Kortti k1 = new Kortti(Maa.PATA, Arvo.KUUSI);
-        Kortti k2 = new Kortti(Maa.PATA, Arvo.JÄTKÄ);
-        Kortti k3 = new Kortti(Maa.HERTTA, Arvo.SEITSEMÄN);
-        Kortti k4 = new Kortti(Maa.PATA, Arvo.KOLME);
-        Kortti k5 = new Kortti(Maa.JOKERI, Arvo.JOKERI);
-        ArrayList<Kortti> kasii = new ArrayList<>();
-        kasii.add(k1);
-        kasii.add(k2);
-        kasii.add(k3);
-        kasii.add(k4);
-        kasii.add(k5);*/
+        yhteishaviot = yhteishaviot + panos;
 
         for (int i=0; i<5; i++) {
             kasiMaat.add(kasi.get(i).getMaa());
@@ -360,6 +373,7 @@ public class Pelaaja implements Serializable {
             System.out.println("Ei voittoa.");
             viimeisinVoitto = 0;
             viimeisinKadenArvo = -1;
+            havitytJaot++;
         }
     }
 
@@ -368,10 +382,14 @@ public class Pelaaja implements Serializable {
             System.out.println("Voitit " + kerroin/2 + " kolikkoa.");
             viimeisinVoitto = kerroin/2;
             viimeisinKadenArvo = kadenArvo;
+            yhteisvoitot = yhteisvoitot + kerroin/2;
+            voitetutJaot++;
         } else {
             System.out.println("Voitit " + panos*kerroin + " kolikkoa.");
             viimeisinVoitto = kerroin*panos;
             viimeisinKadenArvo = kadenArvo;
+            yhteisvoitot = yhteisvoitot + kerroin*panos;
+            voitetutJaot++;
         }
         if (pelimuoto.equals("vapaapeli")) {
             if (panos == 0) {

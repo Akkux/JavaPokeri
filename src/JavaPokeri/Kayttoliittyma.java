@@ -46,6 +46,10 @@ public class Kayttoliittyma {
     // -pelaajatiedot.ser
     // -saavutusten alustus muutettu
     // -pelaajalle yhteisvoitot attribuutti
+    // -        commit4 versio 1.6
+    // -lisätty yhteisvoitot, yhteishäviöt
+    // -palautusprosentti
+    // -voitetut ja hävityt jaot
 
 
     //pelaajalistassa ei ehkä tarvitse tallentaa kättä
@@ -810,6 +814,17 @@ public class Kayttoliittyma {
                 System.out.println("?????");
             }
         }
+        System.out.println();
+        System.out.println("Voitot yhteensä: " + pelaaja.getYhteisvoitot() + " kolikkoa");
+        System.out.println("Häviöt yhteensä: " + pelaaja.getYhteishaviot() + " kolikkoa");
+        Double palautusprosentti = 0.00;
+        if (pelaaja.getYhteishaviot() > 0) {
+            palautusprosentti = Double.valueOf(pelaaja.getYhteisvoitot()/ pelaaja.getYhteishaviot()*100);
+        }
+        System.out.println("Palautusprosentti: " + palautusprosentti + "%");
+        System.out.println("Voitetut jaot: " + pelaaja.getVoitetutJaot());
+        System.out.println("Hävityt jaot: " + pelaaja.getHavitytJaot());
+        System.out.println();
         System.out.println();
     }
 
