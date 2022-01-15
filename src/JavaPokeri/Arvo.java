@@ -5,7 +5,7 @@ public enum Arvo {
     NELJÄ(4), VIISI(5), KUUSI(6), SEITSEMÄN(7),
     KAHDEKSAN(8), YHDEKSÄN(9), KYMMENEN(10), JÄTKÄ("J", 11),
     KUNINGATAR("Q", 12), KUNINGAS("K", 13),
-    JOKERI("JOKERI", 0);
+    JOKERI("*", 0);
 
     public final String symboli;
     public final int numeroarvo;

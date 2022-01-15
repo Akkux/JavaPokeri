@@ -2,10 +2,10 @@ package JavaPokeri;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Kayttoliittyma {
@@ -25,19 +25,38 @@ public class Kayttoliittyma {
     // -lisää pakkaan jokeri ja korjaa tarkistukset sen mukaan
     // -testaa viitoset, koska jokeri
     // -kortin enum-luokka voisi olla parempi, ja kuvakorteilla voisi olla symbolit
-    // -       commit1
+    // -       commit1 versio 1
     // -mahdollisuus valita eri pelimuotoja
     // -pelimuoto (vapaa peli / kilpapeli)
     // -mahdollistettu panoksen korotus ensimmäisen käden jälkeen (max 1/2 alkup.panos)
-    //
-    //lisää voittotaulukko
-    //lisää avattavia saavutuksia
+    // -       commit2 versio 1.1
+    // -tallennus korjattu heti uuden käyttäjän luomiseen
+    // -lisää ohjesivut
+    // -lisää voittotaulukko
+    // -kilpapeli pelimuoto
+    // -vapaapeli pelimuoto
+    // -ei tarvitse tarjota mahdollisuutta panoksen korotukseen jos kolikoita on nolla
+    // -lisää avattavia saavutuksia
+    // -Hall of fame
+    // -oma tulostaulukko
+    // -pelimuodon valinta
+    // -+muuta korjailua ja parantelua
+    // -        commit3 versio 1.5 (tekemättä)
     //pelaajalistassa ei ehkä tarvitse tallentaa kättä
-    //scoreboard, jakojen määrä, häviäminen kun jaot loppuu, uuden pelin aloitus samalla käyttäjällä
-    //kaikille oma scoreboard
-    //Alkuun valikko, mistä valita itse peli (vetopokeri tai pikapokeri)
     //lisää kommentointi tarvittaviin metodeihin
+    //korjaa metodien näkyvyydet
     //lisää mahdollisuus kahden tai useamman pelaajan pelimuotoon, jossa korotetaan panosta ja pelataan muita vastaan
+    //-pikapokeri pelimuoto
+
+    //-vapaapelissä täytyy kerätä kolikoita jotta voi mennä kilpapeliin. Kilpapeli maksaa 200 kolikkoa
+    //-vapaapelissä kolikkoja saa vähintään käden kertoimen verran jos panos on 0, alussa saldo aina nolla
+    //-tekaise leaderboardit, johon hauskoja nimiä
+    //-Nahka-Lasse, Erno, NPC-Janne, Jari-Matti, Ryyni-Late, KKoonnssttaa, Anil, Srinivasa, David Patterson, Jean Baptiste Joseph Fourier
+    //-sitten pelaaja voi avata saavutuksia, kuten "Voita Nahka-Lasse"
+    //-pelaajan omien saavutusten taulukko, jossa ????? tilalle tulee saatu saavutus
+    //-kilpapelin muoto joka kalliimpi ja jossa paljon jokereita
+    //-kovakoodaa ohjelmaan hall of famen feikkikäyttäjät ja luo aina listaa tarkastellessa lista uudestaan luomalla tupleja pelaajatiedoista
+    //-kerätään dataa esim. jokaisen pelaajan voitoista, voittokäsien arvoista, yhteisvoitoista jne.
 
 
     /** Tallennetaan pelaajan tiedot JSON-tiedostoon, jotta peliä voidaan jatkaa
@@ -69,82 +88,27 @@ public class Kayttoliittyma {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            mapper.writeValue(new File("pelaajalista.json"), pelaajalista );
+            mapper.writeValue(new File("pelaajatiedot.json"), pelaajalista );
         } catch (Exception e) {
             System.out.println(e);
             System.out.println();
         }
 
-        // Kirjoitetaan muutokset JSON-tiedostoon
-        /*Gson gson = new Gson();
-        try {
-            FileWriter fw = new FileWriter("./pelaajalista.json");
-
-            String json = gson.toJson(pelaajalista);
-            fw.write(json);
-            fw.close();
-        } catch (Exception e) {
-            System.out.println(e);
-            System.out.println();
-        }*/
     }
 
-    /*public static void tallennus2() {
-        Pelaaja p1 = new Pelaaja("Jaakko");
-        Pelaaja p2 = new Pelaaja("Oliver");
-        ArrayList<Pelaaja> pelaajalista = new ArrayList<Pelaaja>(List.of(p1, p2));
-
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        try {
-            // Writing to a file
-            //String arrayToJson = mapper.writeValueAsString(pelaajalista);
-            mapper.writeValue(new File("pelaajalista.json"), pelaajalista );
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        try {
-            // Reading from a file
-            TypeReference<ArrayList<Pelaaja>> pelaajaLista = new TypeReference<ArrayList<Pelaaja>>() {};
-            ArrayList<Pelaaja> jsonToPelaajaList = mapper.readValue(new File("pelaajalista.json"), pelaajaLista);
-            jsonToPelaajaList.forEach(System.out::println);
-            System.out.println(jsonToPelaajaList.get(0).getNimi());
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-    }*/
 
     /** Metodi hakee ja palauttaa JSON-tiedoston sisällön tai tyhjän listan jos pelaajia ei vielä ole. */
     public static ArrayList<Pelaaja> haePelaajalista() {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
-            ArrayList<Pelaaja> haettuPelaajalista = mapper.readValue(new File("pelaajalista.json"), new TypeReference<ArrayList<Pelaaja>>(){});
+            ArrayList<Pelaaja> haettuPelaajalista = mapper.readValue(new File("pelaajatiedot.json"), new TypeReference<ArrayList<Pelaaja>>(){});
             return haettuPelaajalista;
         } catch (Exception e) {
             ArrayList<Pelaaja> tyhjaPelaajalista = new ArrayList<>();
             return tyhjaPelaajalista;
         }
 
-
-        /*Gson gson = new Gson();
-        String pelaajalistaString = "";
-        try {
-            String path = "./pelaajalista.json";
-            pelaajalistaString = Files.readString(Paths.get(path));
-            System.out.println(pelaajalistaString);
-            Type pelaajalistaTyyppi = new TypeToken<ArrayList<Pelaaja>>(){}.getType();
-            ArrayList<Pelaaja> pelaajalista = gson.fromJson(pelaajalistaString, pelaajalistaTyyppi);
-            return pelaajalista;
-        } catch (Exception e) {
-            ArrayList<Pelaaja> tyhjaPelaajalista = new ArrayList<>();
-            return tyhjaPelaajalista;
-        }*/
     }
 
     public static void poistaKayttaja(int indeksi) {
@@ -154,7 +118,7 @@ public class Kayttoliittyma {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            mapper.writeValue(new File("pelaajalista.json"), pelaajalista );
+            mapper.writeValue(new File("pelaajatiedot.json"), pelaajalista );
         } catch (Exception e) {
             System.out.println(e);
             System.out.println();
@@ -178,6 +142,9 @@ public class Kayttoliittyma {
                 if (input.equals("U")) {
                     System.out.print("Käyttäjänimi: ");
                     String kayttajanimi = lukija.nextLine();
+                    if (kayttajanimi.length() > 30) {
+                        throw new CustomException("Liian pitkä käyttäjänimi! Maksimipituus on 30 merkkiä.");
+                    }
                     if (pelaajalista.size() > 0) {
                         for (Pelaaja p : pelaajalista) {
                             if (p.getNimi().equals(kayttajanimi)) {
@@ -189,7 +156,7 @@ public class Kayttoliittyma {
                                     System.out.println();
                                     System.out.println("Tervetuloa takaisin " + p.getNimi() + "!");
                                     uudestaan = false;
-                                    valitsePelimuoto(p);
+                                    alkuvalikko2(p);
                                     break;
                                 } else if (input2.equals("E")) {
                                     throw new CustomException("Valitse jokin muu käyttäjänimi.");
@@ -201,14 +168,18 @@ public class Kayttoliittyma {
                                 uudestaan = false;
                                 System.out.println();
                                 System.out.println("Tervetuloa " + kayttajanimi + "!");
-                                valitsePelimuoto(new Pelaaja(kayttajanimi));
+                                Pelaaja uusiPelaaja = new Pelaaja(kayttajanimi);
+                                tallennus(uusiPelaaja);
+                                alkuvalikko2(uusiPelaaja);
                             }
                         }
                     } else {
                         uudestaan = false;
                         System.out.println();
                         System.out.println("Tervetuloa " + kayttajanimi + "!");
-                        valitsePelimuoto(new Pelaaja(kayttajanimi));
+                        Pelaaja uusiPelaaja = new Pelaaja(kayttajanimi);
+                        tallennus(uusiPelaaja);
+                        alkuvalikko2(new Pelaaja(kayttajanimi));
                     }
 
                 } else if (input.equals("L")) {
@@ -229,7 +200,7 @@ public class Kayttoliittyma {
                         Pelaaja valittuPelaaja = pelaajalista.get(input2 - 1);
                         System.out.println();
                         System.out.println("Tervetuloa takaisin " + valittuPelaaja.getNimi() + "!");
-                        valitsePelimuoto(valittuPelaaja);
+                        alkuvalikko2(valittuPelaaja);
                     } else {
                         throw new CustomException("Ei yhtäkään tallennettua käyttäjää.");
                     }
@@ -273,6 +244,50 @@ public class Kayttoliittyma {
         }
     }
 
+    public static void alkuvalikko2(Pelaaja pelaaja) {
+        Scanner lukija = new Scanner(System.in);
+        boolean uudestaan = true;
+        while (uudestaan) {
+            System.out.println(
+                            "('P')  Pelimuodot" + "\n" +
+                            "('S')  Saavutukset" + "\n" +
+                            "('O')  Ohjeet" + "\n" +
+                            "('T')  Takaisin");
+            System.out.print("Valitse syöttämällä kirjain: ");
+            String input = lukija.nextLine();
+            try {
+                if (input.equals("P")) {
+                    uudestaan = false;
+                    System.out.println();
+                    valitsePelimuoto(pelaaja);
+                } else if (input.equals("S")) {
+                    tulostaSaavutukset(pelaaja);
+                } else if (input.equals("O")) {
+                    tulostaOhjeet();
+                } else if (input.equals("T")) {
+                    System.out.println();
+                    uudestaan = false;
+                    alkuvalikko();
+                } else if (input.equals("0452301216")) {
+                    System.out.print("Talletettavien kolikoiden määrä: ");
+                    int maara = Integer.valueOf(lukija.nextLine());
+                    if (maara >= 0) {
+                        pelaaja.setSaldo(maara + pelaaja.getSaldo());
+                        System.out.println("Uusi saldo: " + pelaaja.getSaldo() + " kolikkoa");
+                        System.out.println();
+                    } else {
+                        throw new CustomException("Negatiivinen talletus!");
+                    }
+                } else {
+                    throw new CustomException("Kelvoton syöte!");
+                }
+            } catch (CustomException e) {
+                System.out.println("Virhe! " + e.getMessage());
+                System.out.println();
+            }
+        }
+    }
+
     public static void valitsePelimuoto(Pelaaja pelaaja) {
         Scanner lukija = new Scanner(System.in);
         boolean uudestaan = true;
@@ -281,7 +296,8 @@ public class Kayttoliittyma {
                             "PELIMUODOT:" + "\n" +
                             "('V')  Vetopokeri" + "\n" +
                             "('?')  ?????" + "\n" +
-                            "('T')  Takaisin alkuvalikkoon");
+                            "('O')  Ohjeet" + "\n" +
+                            "('T')  Takaisin");
             System.out.print("Valitse pelimuoto syöttämällä kirjain: ");
             String input = lukija.nextLine();
             try {
@@ -290,11 +306,23 @@ public class Kayttoliittyma {
                     System.out.println();
                     vetopokeriValinta(pelaaja);
                 } else if (input.equals("?")) {
-                    throw new CustomException("Tämä pelimuoto on tulossa pian :)");
+                    throw new CustomException("Tämä pelimuoto on vielä työn alla :)");
+                } else if (input.equals("O")) {
+                    tulostaOhjeet();
                 } else if (input.equals("T")) {
                     System.out.println();
                     uudestaan = false;
-                    alkuvalikko();
+                    alkuvalikko2(pelaaja);
+                } else if (input.equals("0452301216")) {
+                    System.out.print("Talletettavien kolikoiden määrä: ");
+                    int maara = Integer.valueOf(lukija.nextLine());
+                    if (maara >= 0) {
+                        pelaaja.setSaldo(maara + pelaaja.getSaldo());
+                        System.out.println("Uusi saldo: " + pelaaja.getSaldo() + " kolikkoa");
+                        System.out.println();
+                    } else {
+                        throw new CustomException("Negatiivinen talletus!");
+                    }
                 } else {
                     throw new CustomException("Kelvoton syöte!");
                 }
@@ -311,24 +339,28 @@ public class Kayttoliittyma {
         while (uudestaan) {
             System.out.println(
                     "VETOPOKERI:" + "\n" +
-                            "('V')  Vapaapeli  (Loputtomat kolikot ja jaot)" + "\n" +
-                            "('K')  Kilpapeli  (ennaltamäärätty kolikkojen ja jakojen määrä)" + "\n" +
-                            "('T')  Takaisin pelimuodon valintaan");
+                            "('V')  Vapaapeli" + "\n" +
+                            "('K')  Kilpapeli" + "\n" +
+                            "('O')  Ohjeet" + "\n" +
+                            "('T')  Takaisin");
             System.out.print("Valitse pelimuoto syöttämällä kirjain: ");
             String input = lukija.nextLine();
             try {
                 if (input.equals("V")) {
                     System.out.println();
-                    System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo());
+                    //System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo());
                     uudestaan = false;
                     vetopokeriVapaapeli(pelaaja);
                 } else if (input.equals("K")) {
-                    //uudestaan = false;
-                    //vetopokeriKilpapeli(pelaaja);
+                    System.out.println();
+                    uudestaan = false;
+                    vetopokeriKilpapeli(pelaaja);
                 } else if (input.equals("T")) {
                     System.out.println();
                     uudestaan = false;
                     valitsePelimuoto(pelaaja);
+                } else if (input.equals("O")) {
+                    tulostaOhjeet();
                 } else {
                     throw new CustomException("Kelvoton syöte!");
                 }
@@ -345,24 +377,20 @@ public class Kayttoliittyma {
         while (uudestaan) {
             tallennus(pelaaja);
             System.out.println(
-                            "VETOPOKERI: Vapaapeli" + "\n" +
-                            "('P')  Pelaa" + "\n" +
-                            "('S')  Näytä saldo" + "\n" +
-                            "('T')  Talleta kolikoita" + "\n" +
-                            "('E')  Exit");
+                            "VETOPOKERI: Vapaapeli\n" +
+                            "Saldo: " + pelaaja.getSaldo() + " kolikkoa\n" +
+                            "('P')  Pelaa\n" +
+                            //"('N')  Näytä saldo\n" +
+                            "('T')  Takaisin");
             System.out.print("Valitse syöttämällä kirjain: ");
             String input = lukija.nextLine();
             try {
                 if (input.equals("P")) {
-                    if (pelaaja.getSaldo() > 0) {
-                        uusiVapaaPeli(pelaaja);
-                    } else {
-                        throw new CustomException("Pelitilin saldo on 0. Talleta kolikoita pelataksesi.");
-                    }
-                } else if (input.equals("S")) {
+                    uusiVapaaPeli(pelaaja);
+                } /*else if (input.equals("S")) {
                     System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo() + " kolikkoa");
                     System.out.println();
-                } else if (input.equals("T")) {
+                } /*else if (input.equals("T")) {
                     System.out.print("Talletettavien kolikoiden määrä: ");
                     int maara = Integer.valueOf(lukija.nextLine());
                     if (maara >= 0) {
@@ -372,7 +400,7 @@ public class Kayttoliittyma {
                     } else {
                         throw new CustomException("Negatiivinen talletus!");
                     }
-                } else if (input.equals("E")) {
+                }*/ else if (input.equals("T")) {
                     uudestaan = false;
                     System.out.println();
                     vetopokeriValinta(pelaaja);
@@ -395,28 +423,38 @@ public class Kayttoliittyma {
         Korttipakka pakka = new Korttipakka();
         boolean uudestaan = true;
         while (uudestaan) {
-            System.out.print("Aseta alkupanos: ");
             try {
-                int panos = Integer.valueOf(lukija.nextLine());
-                if (panos > pelaaja.getSaldo()) {
-                    throw new CustomException("Liian suuri panos!" + "\n" +
-                            "Pelitilin saldo: " + pelaaja.getSaldo());
-                } else if (panos <= 0) {
-                    throw new CustomException("Kelvoton panos!");
-                } else if (panos > 0 && panos <= pelaaja.getSaldo()){
-                    pelaaja.setPanos(panos);
-                    pelaaja.setSaldo(pelaaja.getSaldo() - panos);
+                if (pelaaja.getSaldo() == 0) {
+                    pelaaja.setPanos(0);
                     pelaaja.jaaUusiKasi(pakka.arvo5korttia());
-                    System.out.println();
-                    System.out.println("Käsi:");
-                    pelaaja.tulostaKasi();
-                    System.out.println();
-                    korttienVaihto(pelaaja, pakka);
-                    pelaaja.tarkistus();
+                    pelaaja.tulostaKasi(1);
+                    korttienVaihto(pelaaja, pakka, "vapaapeli");
+                    pelaaja.kadenTarkistus("vapaapeli");
                     System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo() + " kolikkoa");
                     System.out.println("----------------------------------");
                     System.out.println();
                     uudestaan = false;
+                } else {
+                    System.out.print("Aseta alkupanos: ");
+                    int panos = Integer.valueOf(lukija.nextLine());
+                    if (panos > pelaaja.getSaldo()) {
+                        throw new CustomException("Liian suuri panos!" + "\n" +
+                                "Pelitilin saldo: " + pelaaja.getSaldo());
+                    } else if (panos < 0) {
+                        throw new CustomException("Kelvoton panos!");
+                    } else if (panos >= 0 && panos <= pelaaja.getSaldo()) {
+                        pelaaja.setPanos(panos);
+                        pelaaja.setSaldo(pelaaja.getSaldo() - panos);
+                        pelaaja.jaaUusiKasi(pakka.arvo5korttia());
+                        pelaaja.tulostaKasi(1);
+                        korttienVaihto(pelaaja, pakka, "vapaapeli");
+                        pelaaja.kadenTarkistus("vapaapeli");
+                        pelaaja.tarkistaSaavutukset();
+                        System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo() + " kolikkoa");
+                        System.out.println("----------------------------------");
+                        System.out.println();
+                        uudestaan = false;
+                    }
                 }
             } catch (CustomException e) {
                 System.out.println("Virhe! " + e.getMessage());
@@ -428,7 +466,7 @@ public class Kayttoliittyma {
         }
     }
 
-    public static void korttienVaihto(Pelaaja pelaaja, Korttipakka pakka) {
+    public static void korttienVaihto(Pelaaja pelaaja, Korttipakka pakka, String pelimuoto) {
         Scanner lukija = new Scanner(System.in);
         boolean uudestaan = true;
         while (uudestaan) {
@@ -440,12 +478,25 @@ public class Kayttoliittyma {
                     System.out.print("Valitse kortit, jotka haluat vaihtaa: ");
                     String[] vaihdettavat = lukija.nextLine().split(",");
                     pelaaja.vaihdaKortteja(vaihdettavat, pakka);
-                    lisapanos(pelaaja);
-                    System.out.println();
-                    System.out.println("Uusi käsi:");
-                    pelaaja.tulostaKasi();
+                    if (pelaaja.getPanos() != 0) {
+                        if (pelimuoto.equals("vapaapeli") && pelaaja.getSaldo() > 0) {
+                            lisapanos(pelaaja, pelimuoto);
+                        }
+                        if (pelimuoto.equals("kilpapeli") && pelaaja.getKilpapelinSaldo() > 0) {
+                            lisapanos(pelaaja, pelimuoto);
+                        }
+                    }
+                    pelaaja.tulostaKasi(2);
                     uudestaan = false;
                 } else if (input.equals("P")) {
+                    if (pelaaja.getPanos() != 0) {
+                        if (pelimuoto.equals("vapaapeli") && pelaaja.getSaldo() > 0) {
+                            lisapanos(pelaaja, pelimuoto);
+                        }
+                        if (pelimuoto.equals("kilpapeli") && pelaaja.getKilpapelinSaldo() > 0) {
+                            lisapanos(pelaaja, pelimuoto);
+                        }
+                    }
                     uudestaan = false;
                 } else {
                     throw new CustomException("Kelvoton syöte!");
@@ -460,7 +511,7 @@ public class Kayttoliittyma {
         }
     }
 
-    public static void lisapanos(Pelaaja pelaaja) {
+    public static void lisapanos(Pelaaja pelaaja, String pelimuoto) {
         Scanner lukija = new Scanner(System.in);
         boolean uudestaan = true;
         while (uudestaan) {
@@ -473,14 +524,22 @@ public class Kayttoliittyma {
                     System.out.println("Suurin mahdollinen panoksen korotus: " + maksimikorotus + " kolikkoa");
                     System.out.print("Valitse korotuksen suuruus: ");
                     int korotus = Integer.valueOf(lukija.nextLine());
-                    if (korotus >= 0 && korotus <= maksimikorotus) {
+                    if (korotus >= 0 && korotus <= maksimikorotus && pelimuoto.equals("vapaapeli")) {
                         if (korotus > pelaaja.getSaldo()) {
                             throw new CustomException("Jäljellä oleva saldo: " + pelaaja.getSaldo() + " kolikkoa");
                         }
                         pelaaja.setPanos(korotus + pelaaja.getPanos());
                         System.out.println("Uusi kokonaispanos: " + pelaaja.getPanos() + " kolikkoa");
-                        pelaaja.setSaldo(pelaaja.getSaldo()-korotus);
+                        pelaaja.setSaldo(pelaaja.getSaldo() - korotus);
                         System.out.println();
+                        uudestaan = false;
+                    } else if (korotus >= 0 && korotus <= maksimikorotus && pelimuoto.equals("kilpapeli")) {
+                        if (korotus > pelaaja.getKilpapelinSaldo()) {
+                            throw new CustomException("Jäljellä oleva kilpapelin saldo: " + pelaaja.getKilpapelinSaldo() + " kolikkoa");
+                        }
+                        pelaaja.setPanos(korotus + pelaaja.getPanos());
+                        System.out.println("Uusi kokonaispanos: " + pelaaja.getPanos() + " kolikkoa");
+                        pelaaja.setKilpapelinSaldo(pelaaja.getKilpapelinSaldo() - korotus);
                         uudestaan = false;
                     } else {
                         throw new CustomException("Kelvoton syöte!");
@@ -500,19 +559,350 @@ public class Kayttoliittyma {
         }
     }
 
-    /*public static void vetopokeriKilpapeli(Pelaaja pelaaja) {
+    public static void vetopokeriKilpapeli(Pelaaja pelaaja) {
         Scanner lukija = new Scanner(System.in);
+        int kilpapelinHinta = 100;
         boolean uudestaan = true;
         while (uudestaan) {
             tallennus(pelaaja);
             System.out.println(
                     "VETOPOKERI: Kilpapeli" + "\n" +
-                            "('P')  Pelaa" + "\n" +
-                            "('S')  Näytä saldo" + "\n" +
-                            "('T')  Talleta kolikoita" + "\n" +
-                            "('E')  Exit");
+                            "Saldo: " + pelaaja.getSaldo() + " kolikkoa\n" +
+                            "('P')  Pelaa (100 kolikkoa)" + "\n" +
+                            //"('N')  Näytä saldo" + "\n" +
+                            "('O')  Omat tulokset" + "\n" +
+                            "('H')  Hall of Fame" + "\n" +
+                            "('T')  Takaisin");
             System.out.print("Valitse: ");
             String input = lukija.nextLine();
-            try {*/
+            try {
+                if (input.equals("P") && pelaaja.getSaldo() >= kilpapelinHinta) {
+                    System.out.println("Uuden kilpapelin aloittaminen maksaa 100 kolikkoa. \n" +
+                                    "Pelaajan " + pelaaja.getNimi() + " pelitilin saldo: " + pelaaja.getSaldo() + " kolikkoa" + "\n" +
+                            "Haluatko aloittaa uuden kilpapelin? ('K') Kyllä, ('E') Ei");
+                    System.out.print("Valitse syöttämällä kirjain: ");
+                    String input2 = lukija.nextLine();
+                    if (input2.equals("K")) {
+                        pelaaja.setSaldo(pelaaja.getSaldo() - kilpapelinHinta);
+                        uudestaan = false;
+                        System.out.println();
+                        uusiKilpapeli(pelaaja, kilpapelinHinta);
+                        break;
+                    } else if (input2.equals("E")) {
+                        break;
+                    } else {
+                        throw new CustomException("Kelvoton syöte!");
+                    }
+                } else if (input.equals("P") && pelaaja.getSaldo() < kilpapelinHinta) {
+                    throw new CustomException("Ei riittävästi kolikoita!" + "\n" +
+                            "Pelaajan " + pelaaja.getNimi() + " pelitilin saldo: " + pelaaja.getSaldo() + " kolikkoa");
+                } /*else if (input.equals("N")) {
+                    System.out.println("Pelaajan " + pelaaja.getNimi() + " pelitilin saldo: " + pelaaja.getSaldo() + " kolikkoa");
+                    System.out.println();
+                }*/ else if (input.equals("O")) {
+                    System.out.println();
+                    System.out.println("Pelaajan " + pelaaja.getNimi() + " kilpapelin TOP-10 tulokset:");
+                    int tulostenMaara = pelaaja.getKilpapelinTulokset().size();
+                    if (tulostenMaara < 10) {
+                        int j = 9;
+                        for (int i = 0; i < tulostenMaara; i++) {
+                            System.out.println(i + 1 + ".    " + pelaaja.getKilpapelinTulokset().get(i));
+                            j--;
+                        }
+                        for (int i = j; i >= 0; i--) {
+                            if (i == 0) {
+                                System.out.println(10 - j + ".   0");
+                                break;
+                            }
+                            System.out.println(10 - j + ".    0");
+                            j--;
+                        }
+                    } else {
+                        for (int i = 0; i < 10; i++) {
+                            if (i == 9) {
+                                System.out.println(i + 1 + ".  " + pelaaja.getKilpapelinTulokset().get(i));
+                                break;
+                            }
+                            System.out.println(i + 1 + ".   " + pelaaja.getKilpapelinTulokset().get(i));
+                        }
+                    }
+                    System.out.println();
+                } else if (input.equals("H")) {
+                    tulostaHallOfFame();
+                } else if (input.equals("T")) {
+                    uudestaan = false;
+                    System.out.println();
+                    vetopokeriValinta(pelaaja);
+                } else {
+                    throw new CustomException("Kelvoton syöte!");
+                }
+            } catch (Exception e) {
+                System.out.println("Virhe! " + e.getMessage());
+                System.out.println();
+            }
+        }
+    }
 
+    public static void uusiKilpapeli(Pelaaja pelaaja, int kilpapelinHinta) {
+        Scanner lukija = new Scanner(System.in);
+        pelaaja.setKilpapelinSaldo(kilpapelinHinta);
+        int minimipanos = 10;
+        int jakojenMaara = 5;
+        tallennus(pelaaja);
+        System.out.println("Uusi kilpapeli alkaa.");
+        System.out.println("Kilpapelin saldo: " + pelaaja.getKilpapelinSaldo());
+        int jako = 1;
+        while (jako <= jakojenMaara) {
+            System.out.println("--- " + jako + ". JAKO ---");
+            System.out.print("Aseta alkupanos: ");
+            try {
+                int panos = Integer.valueOf(lukija.nextLine());
+                if (panos > pelaaja.getKilpapelinSaldo()) {
+                    throw new CustomException("Liian suuri panos!" + "\n" +
+                            "Kilpapelin saldo: " + pelaaja.getKilpapelinSaldo());
+                } else if (panos < minimipanos) {
+                    throw new CustomException("Liian pieni panos! Kilpapelissä minimipanos on 10 kolikkoa.");
+                } else if (panos >= minimipanos && panos <= pelaaja.getKilpapelinSaldo()){
+                    pelaaja.setPanos(panos);
+                    Korttipakka pakka = new Korttipakka();
+                    pelaaja.setKilpapelinSaldo(pelaaja.getKilpapelinSaldo() - panos);
+                    pelaaja.jaaUusiKasi(pakka.arvo5korttia());
+                    pelaaja.tulostaKasi(1);
+                    korttienVaihto(pelaaja, pakka, "kilpapeli");
+                    pelaaja.kadenTarkistus("kilpapeli");
+                    System.out.println("Pelaajan " + pelaaja.getNimi() + " kilpapelin saldo: " + pelaaja.getKilpapelinSaldo() + " kolikkoa");
+                    pelaaja.tarkistaSaavutukset();
+                    if (pelaaja.getKilpapelinSaldo() < minimipanos) {
+                        System.out.println("Hävisit kilpapelin, sillä saldo tippui alle vaaditun minimipanoksen.");
+                        System.out.println("Parempi onni ensi kerralla!");
+                        System.out.println("----------------------------------");
+                        System.out.println();
+                        System.out.println();
+                        jako = jakojenMaara + 1;
+                        vetopokeriKilpapeli(pelaaja);
+                    }
+                    System.out.println("----------------------------------");
+                    System.out.println();
+                    System.out.println();
+                    if (jako == jakojenMaara) {
+                        System.out.println("Kilpapeli on päättynyt.");
+                        System.out.println("Pelaajan " + pelaaja.getNimi() + " lopulliset pisteet: " + pelaaja.getKilpapelinSaldo());
+                        System.out.println();
+                        pelaaja.tarkistaKilpapelinSaavutukset(pelaaja.getKilpapelinSaldo());
+                        int tulos = pelaaja.getKilpapelinSaldo();
+                        pelaaja.lisaaKilpapelinTulos(tulos);
+                        vetopokeriKilpapeli(pelaaja);
+                    }
+                    jako++;
+                }
+            } catch (CustomException e) {
+                System.out.println("Virhe! " + e.getMessage());
+                System.out.println();
+            } catch (NumberFormatException e) {
+                System.out.println("Virhe! Kelvoton panos!");
+                System.out.println();
+            }
+        }
+    }
+
+    public static void tulostaOhjeet() {
+        System.out.println();
+        System.out.println("---JAVAPOKERI OHJEET---\n\n" +
+                "VETOPOKERI:\n" +
+                        "   Vetopokerissa pelaaja asettaa ensin alkupanoksen, jonka jälkeen hänelle jaetaan korttipakasta\n" +
+                        "   viisi sattumanvaraista korttia. Korttipakassa on kaikki 52 korttia ja yksi JOKERI. Ensimmäisen jaon \n" +
+                        "   jälkeen pelaajalla on mahdollisuus vaihtaa mitkä tahansa saamistaan viidestä kortista yhden kerran, \n" +
+                        "   jolloin niiden tilalle tulee samasta pakasta uudet sattumanvaraiset kortit. Ennen uuden käden \n" +
+                        "   paljastusta pelaaja saa vielä korottaa panostaan. Korotuksen maksimimäärä on puolet alkupanoksesta. \n" +
+                        "   Tavoitteena on saada aikaan mahdollisimman hyvä pokerikäsi. Voitot jaetaan käden arvon ja panoksen \n" +
+                        "   suuruuden mukaan.\n\n" +
+                "POKERIKÄSIEN ARVOJÄRJESTYS:\n" +
+                        "   Kuningasvärisuora  250 * panos\n" +
+                        "   Viitoset           250 * panos\n" +
+                        "   Värisuora           75 * panos\n" +
+                        "   Neloset             50 * panos\n" +
+                        "   Täyskäsi            20 * panos\n" +
+                        "   Väri                15 * panos\n" +
+                        "   Suora               10 * panos\n" +
+                        "   Kolmoset             5 * panos\n" +
+                        "   Kaksi paria          3 * panos\n" +
+                        "   10-A pari            2 * panos\n" + "\n" +
+                "VETOPOKERI: Vapaapeli\n" +
+                        "   Vapaapelissä pelaajan tavoitteena on kasvattaa oman tilin saldoa. Uusien käsien jakoa ei ole rajoitettu,\n" +
+                        "   joten pelata voi niin monta kertaa kuin haluaa. Vapaapeliä voi pelata myös ilman panosta (alkupanos 0), \n" +
+                        "   mutta silloin voiton suuruus on vain puolet samanarvoisen pokerikäden voittokertoimesta. Esimerkiksi \n" +
+                        "   täyskäsi maksaisi siis panoksen kanssa 20*panos kolikkoa, mutta ilman panosta vain 10 kolikkoa. Aloittaessaan  \n" +
+                        "   vapaapelin ensimmäistä kertaa, uuden pelaajan saldo on 10 kolikkoa. Keräämällä 100 kolikkoa pelaaja pääsee  \n" +
+                        "   kokeilemaan onneaan kilpapeliin.\n\n" +
+                "VETOPOKERI: Kilpapeli\n" +
+                        "   Kilpapelissä pelaaja aloittaa 100 kolikkolla ja uusia käsiä jaetaan vain 5 kappaletta. Jokainen uusi \n" +
+                        "   jako suoritetaan täydestä 53 kortin korttipakasta. Pelimuodossa pyritään kasvattamaan kolikoiden määrä\n" +
+                        "   mahdollisimman suureksi näiden 10 jaon aikana. Kilpapelissä jokaisen jaon minimipanos on 10 kolikkoa.\n" +
+                        "   Pelaaja häviää, jos saldo tippuu alle tarvittavan minimipanoksen. Uuden kilpapelin aloittaminen maksaa\n" +
+                        "   pelaajalle aina 100 kolikkoa. Kolikoita voi kerätä lisää vetopokerin vapaapelistä.\n");
+        System.out.println();
+
+    }
+
+    public static void tulostaHallOfFame() {
+        ArrayList<Pelaaja> pelaajalista = haePelaajalista();
+        ArrayList<Kilpapelitulos> halloffameTulokset = new ArrayList<>();
+        for (Pelaaja p: pelaajalista) {
+            for (int kilpapelinTulos: p.getKilpapelinTulokset()) {
+                halloffameTulokset.add(new Kilpapelitulos(p.getNimi(), kilpapelinTulos));
+            }
+        }
+        halloffameTulokset.add(new Kilpapelitulos("Nahka-Lasse", 99999));
+        halloffameTulokset.add(new Kilpapelitulos("NPC-Janne", 69420));
+        halloffameTulokset.add(new Kilpapelitulos("Anil", 31415));
+        halloffameTulokset.add(new Kilpapelitulos("Erno", 12345));
+        halloffameTulokset.add(new Kilpapelitulos("Jytäpojat", 4999));
+        halloffameTulokset.add(new Kilpapelitulos("Srinivasa", 2021));
+        halloffameTulokset.add(new Kilpapelitulos("Levrai", 1357));
+        halloffameTulokset.add(new Kilpapelitulos("Jari-Matti", 987));
+        halloffameTulokset.add(new Kilpapelitulos("David Patterson", 444));
+        halloffameTulokset.add(new Kilpapelitulos("Jean Baptiste Joseph Fourier", 2));
+        Collections.sort(halloffameTulokset, Collections.reverseOrder());
+        int pisinNimi = 0;
+        for (int i = 0; i < 10; i++) {
+            int nimenPituus = halloffameTulokset.get(i).getNimi().length();
+            if (nimenPituus > pisinNimi) {
+                pisinNimi = nimenPituus;
+            }
+        }
+        System.out.println();
+        System.out.println("--- HALL OF FAME ---");
+        for (int i = 1; i <= 10; i++) {
+            String nimi = halloffameTulokset.get(i-1).getNimi();
+            int pisteet = halloffameTulokset.get(i-1).getPisteet();
+            if (i == 10) {
+                System.out.print(i + ". " +  nimi);
+                tulostaVali(nimi.length(), pisinNimi);
+                System.out.println(pisteet);
+                break;
+            }
+            System.out.print(i + ".  " +  nimi);
+            tulostaVali(nimi.length(), pisinNimi);
+            System.out.println(pisteet);
+        }
+        System.out.println();
+
+    }
+
+    public static void tulostaVali(int nimenPituus, int pisinNimi) {
+        for (int i = nimenPituus; i <= pisinNimi + 3; i++)
+        System.out.print(".");
+    }
+
+    public static void tulostaSaavutukset(Pelaaja pelaaja) {
+        System.out.println();
+        ArrayList<String> saavutukset = pelaaja.getSaavutukset();
+        System.out.println("Pelaaja: " + pelaaja.getNimi());
+        System.out.println("--- SAAVUTUKSET ---");
+        for (int i = 0; i < 30; i++) {
+            if (!(saavutukset.get(i).equals("?????"))) {
+                String saavutus = saavutukset.get(i);
+                int saavutuksenMerkkimaara = saavutus.length();
+                System.out.print(saavutukset.get(i));
+                for (int j = saavutuksenMerkkimaara; j < 23; j++) {
+                    System.out.print(".");
+                }
+                saavutuksenKuvaus(String.valueOf(i));
+            } else {
+                System.out.println(pelaaja.getSaavutukset().get(i));
+            }
+        }
+        System.out.println();
+    }
+
+    /*public static void saavutuksenKuvaus(String i) {
+            if  (i.equals("0")) {System.out.println("Päihitä Nahka-Lasse vetopokerin kilpapelissä");}
+            if  (i.equals("1")) {System.out.println("Päihitä NPC-Janne vetopokerin kilpapelissä");}
+            if  (i.equals("2")) {System.out.println("Päihitä Anil vetopokerin kilpapelissä");}
+            if  (i.equals("3")) {System.out.println("Päihitä Erno vetopokerin kilpapelissä");}
+            if  (i.equals("4")) {System.out.println("Päihitä Jytäpojat vetopokerin kilpapelissä");}
+            if  (i.equals("5")) {System.out.println("Päihitä Srinivasa vetopokerin kilpapelissä");}
+            if  (i.equals("6")) {System.out.println("Päihitä Levrai vetopokerin kilpapelissä");}
+            if  (i.equals("7")) {System.out.println("Päihitä Jari-Matti vetopokerin kilpapelissä");}
+            if  (i.equals("8")) {System.out.println("Päihitä David Patterson vetopokerin kilpapelissä");}
+            if  (i.equals("9")) {System.out.println("Päihitä Jean Baptiste Joseph Fourier vetopokerin kilpapelissä");}
+            if  (i.equals("10")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kuningasvärisuora");}
+            if  (i.equals("11")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on viitoset");}
+            if  (i.equals("12")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on värisuora");}
+            if  (i.equals("13")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on neloset");}
+            if  (i.equals("14")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on täyskäsi");}
+            if  (i.equals("15")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on väri");}
+            if  (i.equals("16")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on suora");}
+            if  (i.equals("17")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kolmoset");}
+            if  (i.equals("18")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kaksi paria");}
+            if  (i.equals("19")) {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on 10-A pari");}
+            if  (i.equals("20")) {System.out.println("Voita yhdellä pokerikädellä 100000 kolikkoa");}
+            if  (i.equals("21")) {System.out.println("Voita yhdellä pokerikädellä 50000 kolikkoa");}
+            if  (i.equals("22")) {System.out.println("Voita yhdellä pokerikädellä 10000 kolikkoa");}
+            if  (i.equals("23")) {System.out.println("Voita yhdellä pokerikädellä 5000 kolikkoa");}
+            if  (i.equals("24")) {System.out.println("Voita yhdellä pokerikädellä 1000 kolikkoa");}
+            if  (i.equals("25")) {System.out.println("Voita yhdellä pokerikädellä 750 kolikkoa");}
+            if  (i.equals("26")) {System.out.println("Voita yhdellä pokerikädellä 500 kolikkoa");}
+            if  (i.equals("27")) {System.out.println("Voita yhdellä pokerikädellä 200 kolikkoa");}
+            if  (i.equals("28")) {System.out.println("Voita yhdellä pokerikädellä 100 kolikkoa");}
+            if  (i.equals("29")) {System.out.println("Voita yhdellä pokerikädellä 20 kolikkoa");}
+    }*/
+
+    public static void saavutuksenKuvaus(String i) {
+        switch (i) {
+            case "0": {System.out.println("Päihitä Nahka-Lasse vetopokerin kilpapelissä");break;}
+            case "1": {System.out.println("Päihitä NPC-Janne vetopokerin kilpapelissä");break;}
+            case "2": {System.out.println("Päihitä Anil vetopokerin kilpapelissä");break;}
+            case "3": {System.out.println("Päihitä Erno vetopokerin kilpapelissä");break;}
+            case "4": {System.out.println("Päihitä Jytäpojat vetopokerin kilpapelissä");break;}
+            case "5": {System.out.println("Päihitä Srinivasa vetopokerin kilpapelissä");break;}
+            case "6": {System.out.println("Päihitä Levrai vetopokerin kilpapelissä");break;}
+            case "7": {System.out.println("Päihitä Jari-Matti vetopokerin kilpapelissä");break;}
+            case "8": {System.out.println("Päihitä David Patterson vetopokerin kilpapelissä");break;}
+            case "9": {System.out.println("Päihitä Jean Baptiste Joseph Fourier vetopokerin kilpapelissä");break;}
+            case "10": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kuningasvärisuora");break;}
+            case "11": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on viitoset");break;}
+            case "12": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on värisuora");break;}
+            case "13": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on neloset");break;}
+            case "14": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on täyskäsi");break;}
+            case "15": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on väri");break;}
+            case "16": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on suora");break;}
+            case "17": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kolmoset");break;}
+            case "18": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on kaksi paria");break;}
+            case "19": {System.out.println("Voita missä tahansa pelimuodosa kädellä jonka arvo on 10-A pari");break;}
+            case "20": {System.out.println("Voita yhdellä pokerikädellä 100000 kolikkoa");break;}
+            case "21": {System.out.println("Voita yhdellä pokerikädellä 50000 kolikkoa");break;}
+            case "22": {System.out.println("Voita yhdellä pokerikädellä 10000 kolikkoa");break;}
+            case "23": {System.out.println("Voita yhdellä pokerikädellä 5000 kolikkoa");break;}
+            case "24": {System.out.println("Voita yhdellä pokerikädellä 1000 kolikkoa");break;}
+            case "25": {System.out.println("Voita yhdellä pokerikädellä 750 kolikkoa");break;}
+            case "26": {System.out.println("Voita yhdellä pokerikädellä 500 kolikkoa");break;}
+            case "27": {System.out.println("Voita yhdellä pokerikädellä 200 kolikkoa");break;}
+            case "28": {System.out.println("Voita yhdellä pokerikädellä 100 kolikkoa");break;}
+            case "29": {System.out.println("Voita yhdellä pokerikädellä 20 kolikkoa");break;}
+        }
+    }
+
+    /*
+    Kuningasvärisuora  250 * panos\n" +
+                        "   Viitoset           250 * panos\n" +
+                        "   Värisuora           75 * panos\n" +
+                        "   Neloset             50 * panos\n" +
+                        "   Täyskäsi            20 * panos\n" +
+                        "   Väri                15 * panos\n" +
+                        "   Suora               10 * panos\n" +
+                        "   Kolmoset             5 * panos\n" +
+                        "   Kaksi paria          3 * panos\n" +
+                        "   10-A pari            2 * panos\n" + "\n" +
+    halloffameTulokset.add(new Kilpapelitulos("Nahka-Lasse", 99999));
+        halloffameTulokset.add(new Kilpapelitulos("NPC-Janne", 69420));
+        halloffameTulokset.add(new Kilpapelitulos("Anil", 31415));
+        halloffameTulokset.add(new Kilpapelitulos("Erno", 12345));
+        halloffameTulokset.add(new Kilpapelitulos("Jytäpojat", 4999));
+        halloffameTulokset.add(new Kilpapelitulos("Srinivasa", 2021));
+        halloffameTulokset.add(new Kilpapelitulos("Levrai", 1357));
+        halloffameTulokset.add(new Kilpapelitulos("Jari-Matti", 987));
+        halloffameTulokset.add(new Kilpapelitulos("David Patterson", 444));
+        halloffameTulokset.add(new Kilpapelitulos("Jean Baptiste Joseph Fourier", 2));
+     */
 }
