@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -47,6 +48,7 @@ public class Kayttoliittyma {
     // -palautusprosentti
     // -voitetut ja hävityt jaot
     // -        commit5 versio 1.7
+    // -palautusprosentin pyöristys
 
 
     //pelaajalistassa ei ehkä tarvitse tallentaa kättä
@@ -54,7 +56,7 @@ public class Kayttoliittyma {
     //korjaa metodien näkyvyydet
     //lisää mahdollisuus kahden tai useamman pelaajan pelimuotoon, jossa korotetaan panosta ja pelataan muita vastaan
     //-pikapokeri pelimuoto
-    // moikka tämä on verio 1.5.2  
+    // moikka tämä on verio 1.5.2
 
 
     //-vapaapelissä täytyy kerätä kolikoita jotta voi mennä kilpapeliin. Kilpapeli maksaa 200 kolikkoa
@@ -816,11 +818,12 @@ public class Kayttoliittyma {
         System.out.println();
         System.out.println("Voitot yhteensä: " + pelaaja.getYhteisvoitot() + " kolikkoa");
         System.out.println("Häviöt yhteensä: " + pelaaja.getYhteishaviot() + " kolikkoa");
-        Double palautusprosentti = 0.00;
+        double palautusprosentti = 0.0;
         if (pelaaja.getYhteishaviot() > 0) {
-            palautusprosentti = Double.valueOf(pelaaja.getYhteisvoitot()/ pelaaja.getYhteishaviot()*100);
+            palautusprosentti = (double) pelaaja.getYhteisvoitot()/pelaaja.getYhteishaviot() * 100;
         }
-        System.out.println("Palautusprosentti: " + palautusprosentti + "%");
+        DecimalFormat df = new DecimalFormat("#.##");
+        System.out.println("Palautusprosentti: " + df.format(palautusprosentti) + "%");
         System.out.println("Voitetut jaot: " + pelaaja.getVoitetutJaot());
         System.out.println("Hävityt jaot: " + pelaaja.getHavitytJaot());
         System.out.println();
