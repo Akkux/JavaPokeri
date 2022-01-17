@@ -12,7 +12,8 @@ public class Pelaaja implements Serializable {
     private int kilpapelinSaldo;
     private ArrayList<Integer> kilpapelinTulokset;
     private ArrayList<Kortti> kasi;
-    private ArrayList<String> saavutukset;
+    private Boolean[] saavutustenTilat;
+    private Boolean[] vetopokeriParannustenTilat;
     private int viimeisinVoitto;
     private int viimeisinKadenArvo;
     private int yhteisvoitot;
@@ -23,11 +24,12 @@ public class Pelaaja implements Serializable {
     public Pelaaja(String nimi) {
         this.nimi = nimi;
         panos = 0;
-        saldo = 10;
+        saldo = 20;
         kilpapelinSaldo = 0;
         kilpapelinTulokset = alustaKilpapelinTulokset();
         kasi = alustaKasi();
-        saavutukset = alustaSaavutukset();
+        saavutustenTilat = alustaSaavutustenTilat();
+        vetopokeriParannustenTilat = alustaVetopokeriParannustenTilat();
         viimeisinVoitto = 0;
         viimeisinKadenArvo = -1;
         yhteisvoitot = 0;
@@ -86,8 +88,14 @@ public class Pelaaja implements Serializable {
         return kasi.get(i);
     }
 
-    public ArrayList<String> getSaavutukset() {
-        return saavutukset;
+    public Boolean[] getSaavutustenTilat() {
+        return saavutustenTilat;
+    }
+
+    public Boolean[] getVetopokeriParannustenTilat() {return vetopokeriParannustenTilat; }
+
+    public void setVetopokeriParannuksenTilat(Boolean[] vetopokeriParannukset) {
+        this.vetopokeriParannustenTilat = vetopokeriParannukset;
     }
 
     public int getViimeisinVoitto() {
@@ -130,18 +138,25 @@ public class Pelaaja implements Serializable {
         return tulokset;
     }
 
-    public ArrayList<String> alustaSaavutukset() {
-        ArrayList<String> saavutukset = new ArrayList<String>(List.of(
-                "?", "?", "?", "?", "?", "?", "?", "?", "?", "?",
-                "?", "?", "?", "?", "?", "?", "?", "?", "?", "?",
-                "?", "?", "?", "?", "?", "?", "?", "?", "?", "?",
-                "?", "?", "?", "?", "?", "?", "?", "?", "?", "?"));
-        return saavutukset;
+    public Boolean[] alustaSaavutustenTilat() {
+        Boolean[] saavutustenTilat = new Boolean[40];
+        for (int i=0; i<40; i++) {
+            saavutustenTilat[i] = false;
+        }
+        return saavutustenTilat;
     }
 
-    public void tulostaKasi(int jako) {
+    public Boolean[] alustaVetopokeriParannustenTilat() {
+        Boolean[] vetopokeriParannustenTilat = new Boolean[20];
+        for (int i=0; i<20; i++) {
+            vetopokeriParannustenTilat[i] = false;
+        }
+        return vetopokeriParannustenTilat;
+    }
+
+    public void tulostaKasi(boolean korttienVaihtoTapahtunut) {
         System.out.println();
-        if (jako == 1) {
+        if (korttienVaihtoTapahtunut) {
             System.out.println("Käsi:");
         } else {
             System.out.println("Uusi Käsi:");
@@ -167,7 +182,7 @@ public class Pelaaja implements Serializable {
 
     public void vaihdaKortteja(String[] vaihdettavat, Korttipakka pakka) throws CustomException{
         ArrayList<Integer> vaihdettavatInt = new ArrayList<>();
-        for(String vaihdettava : vaihdettavat) {
+        for (String vaihdettava : vaihdettavat) {
             vaihdettavatInt.add(Integer.valueOf(vaihdettava));
         }
         for (int i : vaihdettavatInt) {
@@ -176,7 +191,7 @@ public class Pelaaja implements Serializable {
             }
         }
         for(int vaihdettava : vaihdettavatInt) {
-            kasi.set(vaihdettava-1, pakka.vaihdaKortti(kasi.get(vaihdettava-1)));
+            kasi.set(vaihdettava-1, pakka.nostaUusiKortti());
         }
     }
 
@@ -207,48 +222,18 @@ public class Pelaaja implements Serializable {
         //Tehdään viesteistä lista, jotta ne voidaan tulostaa lopuksi pakettina jota ennen ja jälkeen on kuitenkin tyhjä rivi
         ArrayList<String> tulosteet = new ArrayList<>();
         tulosteet.add(" ");
-        if (kilpapelinTulos != 0) {
-            if (kilpapelinTulos > 99999 && saavutukset.get(0).equals("?")) {
-                saavutukset.set(0, "Nahka-Lassen kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Nahka-Lassen kaataja!");
-            }
-            if (kilpapelinTulos > 69420 && saavutukset.get(1).equals("?")) {
-                saavutukset.set(1, "NPC-Jannen kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: NPC-Jannen kaataja!");
-            }
-            if (kilpapelinTulos > 31415 && saavutukset.get(2).equals("?")) {
-                saavutukset.set(2, "Anilin kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Anilin kaataja!");
-            }
-            if (kilpapelinTulos > 12345 && saavutukset.get(3).equals("?")) {
-                saavutukset.set(3, "Ernon kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Ernon kaataja!");
-            }
-            if (kilpapelinTulos > 4999 && saavutukset.get(4).equals("?")) {
-                saavutukset.set(4, "Jytäpoikien kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Jytäpoikien kaataja!");
-            }
-            if (kilpapelinTulos > 2021 && saavutukset.get(5).equals("?")) {
-                saavutukset.set(5, "Srinivasan kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Srinivasan kaataja!");
-            }
-            if (kilpapelinTulos > 1357 && saavutukset.get(6).equals("?")) {
-                saavutukset.set(6, "Levrain kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Levarin kaataja!");
-            }
-            if (kilpapelinTulos > 987 && saavutukset.get(7).equals("?")) {
-                saavutukset.set(7, "Jari-Matin kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Jari-Matin kaataja!");
-            }
-            if (kilpapelinTulos > 444 && saavutukset.get(8).equals("?")) {
-                saavutukset.set(8, "Pattersonin kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Pattersonin kaataja!");
-            }
-            if (kilpapelinTulos > 2 && saavutukset.get(9).equals("?")) {
-                saavutukset.set(9, "Fourierin kaataja");
-                tulosteet.add(0, "Avasit uuden saavutuksen: Fourierin kaataja!");
+        String[] saavutukset = new Saavutukset().getJasenet();
+        int[] voitettavatTulokset = {99999, 69420, 31415, 12345, 4999, 2021, 1357, 987, 444, 2};
+
+        for (int i=0; i<10; i++) {
+            if (kilpapelinTulos != 0) {
+                if (kilpapelinTulos > voitettavatTulokset[i] && !saavutustenTilat[i]) {
+                    saavutustenTilat[i] = true;
+                    tulosteet.add(0, "Avasit uuden saavutuksen: " + saavutukset[i] +"!");
+                }
             }
         }
+
         if (tulosteet.size() > 0) {
             for (String tuloste: tulosteet) {
                 System.out.println(tuloste);
@@ -256,17 +241,18 @@ public class Pelaaja implements Serializable {
         }
     }
 
-    public ArrayList<String> tarkistaPokerikadenSaavutukset(int kadenArvo) {
+    public ArrayList<String> tarkistaPokerikadenSaavutukset(int viimeisinKadenArvo) {
         //Tarkistetaan pokerikäden arvoon perustuvat saavutukset
-        ArrayList<String> kasiarvot = new ArrayList<>(List.of("Kuningasvärisuora","Viitoset","Värisuora","Neloset",
-                "Täyskäsi","Väri","Suora","Kolmoset","Kaksi paria","10-A pari"));
+
+        String[] saavutukset = new Saavutukset().getJasenet();
         ArrayList<String> tulosteet = new ArrayList<>();
         tulosteet.add(" ");
+
         for (int i=10; i<20; i++){
-            if (kadenArvo == i-10 && saavutukset.get(i).equals("?")) {
-                saavutukset.set(i, kasiarvot.get(i-10));
+            if (viimeisinKadenArvo == i-10 && !saavutustenTilat[i]) {
+                saavutustenTilat[i] = true;
                 //Tehdään viesteistä lista, jotta ne voidaan tulostaa lopuksi pakettina jota ennen ja jälkeen on kuitenkin tyhjä rivi
-                tulosteet.add("Avasit uuden saavutuksen: " + kasiarvot.get(i-10) + "!");
+                tulosteet.add("Avasit uuden saavutuksen: " + saavutukset[i] + "!");
             }
         }
         return tulosteet;
@@ -274,14 +260,15 @@ public class Pelaaja implements Serializable {
 
     public ArrayList<String> tarkistaVoittosummanSaavutukset(int voitto) {
         //Tarkistetaan voiton suuruuteen perustuvat saavutukset
-        ArrayList<Integer> voittosummat = new ArrayList<>(List.of(100000, 50000, 10000, 5000, 1000, 750, 500, 200, 100, 20));
+        int[] voittosummat = {100000, 50000, 10000, 5000, 1000, 750, 500, 200, 100, 20};
+        String[] saavutukset = new Saavutukset().getJasenet();
         ArrayList<String> tulosteet = new ArrayList<>();
         tulosteet.add(" ");
         for (int i=20; i<30; i++){
-            if (voitto >= voittosummat.get(i-20) && saavutukset.get(i).equals("?")) {
-                saavutukset.set(i, (voittosummat.get(i-20)) + " kolikkoa!");
+            if (voitto >= voittosummat[i-20] && !saavutustenTilat[i]) {
+                saavutustenTilat[i] = true;
                 //Tehdään viesteistä lista, jotta ne voidaan tulostaa lopuksi pakettina jota ennen ja jälkeen on kuitenkin tyhjä rivi
-                tulosteet.add("Avasit uuden saavutuksen: " + voittosummat.get(i-20) + " kolikkoa!");
+                tulosteet.add("Avasit uuden saavutuksen: " + saavutukset[i] + "!");
             }
         }
         return tulosteet;
@@ -291,6 +278,8 @@ public class Pelaaja implements Serializable {
         ArrayList<Maa> kasiMaat = new ArrayList<>();
         ArrayList<Integer> kasiArvot = new ArrayList<>();
         yhteishaviot = yhteishaviot + panos;
+
+        //kasi =;
 
         for (int i=0; i<5; i++) {
             kasiMaat.add(kasi.get(i).getMaa());
@@ -303,26 +292,7 @@ public class Pelaaja implements Serializable {
         if (testaaKuningasVarisuora(kasiArvot, kasiMaat)) {
             System.out.println("Tulos: Kuningasvärisuora!");
             int kerroin = 250;
-            voitonmaksu(250, 0, pelimuoto);
-            /*if (panos == 0) {
-                System.out.println("Voitit " + kerroin/2 + " kolikkoa.");
-                viimeisinVoitto = kerroin/2;
-                viimeisinKadenArvo = 0;
-            } else {
-                System.out.println("Voitit " + panos*kerroin + " kolikkoa.");
-                viimeisinVoitto = kerroin*panos;
-                viimeisinKadenArvo = 0;
-            }
-            if (pelimuoto.equals("vapaapeli")) {
-                if (panos == 0) {
-                    setSaldo(getSaldo()+250/2);
-                }
-                setSaldo(getSaldo()+panos*250);
-            }
-            if (pelimuoto.equals("kilpapeli")) {
-                setKilpapelinSaldo(getKilpapelinSaldo()+panos*250);
-
-            }*/
+            voitonmaksu(kerroin, 0, pelimuoto);
 
         } else if (testaaViitoset(kasiArvot)) {
             System.out.println("Tulos: Viitoset!");
@@ -378,12 +348,17 @@ public class Pelaaja implements Serializable {
     }
 
     public void voitonmaksu(int kerroin, int kadenArvo, String pelimuoto) {
+
         if (panos == 0) {
-            System.out.println("Voitit " + kerroin/2 + " kolikkoa.");
-            viimeisinVoitto = kerroin/2;
-            viimeisinKadenArvo = kadenArvo;
-            yhteisvoitot = yhteisvoitot + kerroin/2;
-            voitetutJaot++;
+            if (kerroin > 2) {
+                System.out.println("Voitit " + (kerroin / 2) + 1 + " kolikkoa.");
+                viimeisinVoitto = (kerroin / 2) + 1;
+                viimeisinKadenArvo = kadenArvo;
+                yhteisvoitot = yhteisvoitot + (kerroin / 2) + 1;
+                voitetutJaot++;
+            } else {
+                setSaldo(getSaldo()+kerroin/2);
+            }
         } else {
             System.out.println("Voitit " + panos*kerroin + " kolikkoa.");
             viimeisinVoitto = kerroin*panos;
@@ -391,16 +366,20 @@ public class Pelaaja implements Serializable {
             yhteisvoitot = yhteisvoitot + kerroin*panos;
             voitetutJaot++;
         }
+
         if (pelimuoto.equals("vapaapeli")) {
-            if (panos == 0) {
+            if (panos == 0 && kerroin > 2) {
+                setSaldo(getSaldo()+(kerroin/2)+1);
+            } else {
                 setSaldo(getSaldo()+kerroin/2);
             }
             setSaldo(getSaldo()+panos*kerroin);
         }
+
         if (pelimuoto.equals("kilpapeli")) {
             setKilpapelinSaldo(getKilpapelinSaldo()+panos*kerroin);
-
         }
+
     }
 
 
@@ -474,10 +453,13 @@ public class Pelaaja implements Serializable {
             if (Collections.frequency(kasiMaat, maa) == 5) {
                 return true;
             }
-            //Neljä samaa maata + jokeri
-            if ((Collections.frequency(kasiMaat, maa) == 4) && kasiMaat.contains(Maa.JOKERI)) {
-                return true;
+            //Jos pakassa on mukana jokereita
+            for (int i=4; i>=0; i--) {
+                if ((Collections.frequency(kasiMaat, maa) == i) && (Collections.frequency(kasiMaat, Maa.JOKERI) == 5-i)) {
+                    return true;
+                }
             }
+
         }
         return false;
     }

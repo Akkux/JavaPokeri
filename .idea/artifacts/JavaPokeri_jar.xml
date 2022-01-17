@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="JavaPokeri:jar">
-    <output-path>$USER_HOME$/Desktop/Peli2</output-path>
+    <output-path>$USER_HOME$/Desktop/work-in-progress</output-path>
     <root id="archive" name="JavaPokeri.jar">
       <element id="module-output" name="JavaPokeri" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../Kirjastot/Java/gson-2.8.9.jar" path-in-jar="/" />
