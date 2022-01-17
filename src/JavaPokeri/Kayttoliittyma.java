@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class Kayttoliittyma {
 
 
-    /** branch master**/
+    /** branch maven**/
 
     //siisti koodia ja laita sitten gittiin vain yksi repo "JavaPokeri" jossa koodi ja jar tiedosto
 
