@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 class PelaajaTest {
 
     private static Stream<Arguments> luoKasia() {
+
         ArrayList<Kortti> kuningasvarisuora = new ArrayList<>(List.of(
                 new Kortti(Maa.PATA, Arvo.ÄSSÄ),
                 new Kortti(Maa.PATA, Arvo.KUNINGAS),
@@ -67,7 +68,7 @@ class PelaajaTest {
                 new Kortti(Maa.PATA, Arvo.KOLME),
                 new Kortti(Maa.PATA, Arvo.NELJÄ),
                 new Kortti(Maa.PATA, Arvo.VIISI),
-                new Kortti(Maa.HERTTA, Arvo.KUUSI) ));
+                new Kortti(Maa.HERTTA, Arvo.ÄSSÄ) ));
 
         ArrayList<Kortti> kolmoset = new ArrayList<>(List.of(
                 new Kortti(Maa.PATA, Arvo.KAKSI),
@@ -90,6 +91,94 @@ class PelaajaTest {
                 new Kortti(Maa.PATA, Arvo.KYMMENEN),
                 new Kortti(Maa.HERTTA, Arvo.KYMMENEN) ));
 
+
+
+
+        //JOKERI-testejä
+        ArrayList<Kortti> jokerikuningasvarisuora1 = new ArrayList<>(List.of(
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.PATA, Arvo.KUNINGATAR),
+                new Kortti(Maa.PATA, Arvo.JÄTKÄ),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokeriviitoset1 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokerivarisuora1 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KOLME),
+                new Kortti(Maa.PATA, Arvo.NELJÄ),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokerineloset1 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.HERTTA, Arvo.KOLME) ));
+
+        ArrayList<Kortti> jokeritayskasi1 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.PATA, Arvo.KOLME),
+                new Kortti(Maa.HERTTA, Arvo.KOLME) ));
+
+        ArrayList<Kortti> jokerivari1 = new ArrayList<Kortti>(List.of(
+                new Kortti(Maa.PATA, Arvo.ÄSSÄ),
+                new Kortti(Maa.PATA, Arvo.ÄSSÄ),
+                new Kortti(Maa.PATA, Arvo.NELJÄ),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokerivari2 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.NELJÄ),
+                new Kortti(Maa.PATA, Arvo.YHDEKSÄN),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokerisuora1 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KOLME),
+                new Kortti(Maa.PATA, Arvo.KUUSI),
+                new Kortti(Maa.HERTTA, Arvo.VIISI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokerisuora2 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.ÄSSÄ),
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.NELJÄ),
+                new Kortti(Maa.HERTTA, Arvo.VIISI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokerisuora3 = new ArrayList<>(List.of(
+                new Kortti(Maa.HERTTA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KOLME),
+                new Kortti(Maa.PATA, Arvo.NELJÄ),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
+
+        ArrayList<Kortti> jokerikolmoset1 = new ArrayList<>(List.of(
+                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.PATA, Arvo.YHDEKSÄN),
+                new Kortti(Maa.HERTTA, Arvo.KYMMENEN) ));
+
+        ArrayList<Kortti> jokeripari1 = new ArrayList<>(List.of(
+                new Kortti(Maa.JOKERI, Arvo.JOKERI),
+                new Kortti(Maa.PATA, Arvo.KOLME),
+                new Kortti(Maa.PATA, Arvo.NELJÄ),
+                new Kortti(Maa.PATA, Arvo.YHDEKSÄN),
+                new Kortti(Maa.HERTTA, Arvo.KYMMENEN) ));
+
         return Stream.of(
                 Arguments.of(kuningasvarisuora, "Tulos: Kuningasvärisuora!\r\n" + "Voitit 125 kolikkoa."),
                 Arguments.of(viitoset, "Tulos: Viitoset!\r\n" + "Voitit 125 kolikkoa."),
@@ -100,7 +189,20 @@ class PelaajaTest {
                 Arguments.of(suora, "Tulos: Suora!\r\n" + "Voitit 5 kolikkoa."),
                 Arguments.of(kolmoset, "Tulos: Kolmoset!\r\n" + "Voitit 3 kolikkoa."),
                 Arguments.of(kaksiParia, "Tulos: Kaksi paria!\r\n" + "Voitit 2 kolikkoa."),
-                Arguments.of(pari, "Tulos: 10-pari tai parempi!\r\n" + "Voitit 1 kolikkoa.")
+                Arguments.of(pari, "Tulos: 10-A pari!\r\n" + "Voitit 1 kolikkoa."),
+
+                Arguments.of(jokerikuningasvarisuora1, "Tulos: Kuningasvärisuora!\r\n" + "Voitit 125 kolikkoa."),
+                Arguments.of(jokeriviitoset1, "Tulos: Viitoset!\r\n" + "Voitit 125 kolikkoa."),
+                Arguments.of(jokerivarisuora1, "Tulos: Värisuora!\r\n" + "Voitit 38 kolikkoa."),
+                Arguments.of(jokerineloset1, "Tulos: Neloset!\r\n" + "Voitit 25 kolikkoa."),
+                Arguments.of(jokeritayskasi1, "Tulos: Täyskäsi!\r\n" + "Voitit 10 kolikkoa."),
+                Arguments.of(jokerivari1, "Tulos: Väri!\r\n" + "Voitit 8 kolikkoa."),
+                Arguments.of(jokerivari2, "Tulos: Väri!\r\n" + "Voitit 8 kolikkoa."),
+                Arguments.of(jokerisuora1, "Tulos: Suora!\r\n" + "Voitit 5 kolikkoa."),
+                Arguments.of(jokerisuora2, "Tulos: Suora!\r\n" + "Voitit 5 kolikkoa."),
+                Arguments.of(jokerisuora3, "Tulos: Suora!\r\n" + "Voitit 5 kolikkoa."),
+                Arguments.of(jokerikolmoset1, "Tulos: Kolmoset!\r\n" + "Voitit 3 kolikkoa."),
+                Arguments.of(jokeripari1, "Tulos: 10-A pari!\r\n" + "Voitit 1 kolikkoa.")
         );
     }
 

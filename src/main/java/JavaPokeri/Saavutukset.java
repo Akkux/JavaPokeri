@@ -40,16 +40,21 @@ public class Saavutukset implements AvattavatAsiat {
                 "Kolmoset",
                 "Kaksi paria",
                 "10-A pari",
-                "100000 kolikkoa",
-                "50000 kolikkoa",
-                "10000 kolikkoa",
-                "5000 kolikkoa",
-                "1000 kolikkoa",
+                "100 000 kolikkoa",
+                "50 000 kolikkoa",
+                "10 000 kolikkoa",
+                "5 000 kolikkoa",
+                "1 000 kolikkoa",
                 "750 kolikkoa",
                 "500 kolikkoa",
                 "200 kolikkoa",
                 "100 kolikkoa",
-                "20 kolikkoa"
+                "20 kolikkoa",
+                "Miljonääri",
+                "Satatuhatnääri",
+                "Kymmenentuhatnääri",
+                "Tuhatnääri",
+                "Satanääri"
         };
         return jasenet;
     }
@@ -76,16 +81,21 @@ public class Saavutukset implements AvattavatAsiat {
                 "Voita missä tahansa pelimuodosa kädellä jonka arvo on kolmoset",
                 "Voita missä tahansa pelimuodosa kädellä jonka arvo on kaksi paria",
                 "Voita missä tahansa pelimuodosa kädellä jonka arvo on 10-A pari",
-                "Voita yhdellä pokerikädellä 100000 kolikkoa",
-                "Voita yhdellä pokerikädellä 50000 kolikkoa",
-                "Voita yhdellä pokerikädellä 10000 kolikkoa",
-                "Voita yhdellä pokerikädellä 5000 kolikkoa",
-                "Voita yhdellä pokerikädellä 1000 kolikkoa",
+                "Voita yhdellä pokerikädellä 100 000 kolikkoa",
+                "Voita yhdellä pokerikädellä 50 000 kolikkoa",
+                "Voita yhdellä pokerikädellä 10 000 kolikkoa",
+                "Voita yhdellä pokerikädellä 5 000 kolikkoa",
+                "Voita yhdellä pokerikädellä 1 000 kolikkoa",
                 "Voita yhdellä pokerikädellä 750 kolikkoa",
                 "Voita yhdellä pokerikädellä 500 kolikkoa",
                 "Voita yhdellä pokerikädellä 200 kolikkoa",
                 "Voita yhdellä pokerikädellä 100 kolikkoa",
-                "Voita yhdellä pokerikädellä 20 kolikkoa"
+                "Voita yhdellä pokerikädellä 20 kolikkoa",
+                "Kasvata saldo 1 000 000 kolikkoon",
+                "Kasvata saldo 100 000 kolikkoon",
+                "Kasvata saldo 10 000 kolikkoon",
+                "Kasvata saldo 1 000 kolikkoon",
+                "Kasvata saldo 100 kolikkoon",
 
         };
         return kuvaukset;

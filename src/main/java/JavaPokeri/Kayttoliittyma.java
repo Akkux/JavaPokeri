@@ -69,13 +69,13 @@ public class Kayttoliittyma {
     // -maven
     // -pelaajatesti
     // -koodikommit 1.7.10
-    //-vaihda valikkojen kirjaimet numeroiksi
-    //-tarkistukset kun pakassa on 2 jokeria tai enemmän
-    //-saavutuksia saldon summalle
-    //-tilastoja kuten suurin voitto ja paras käsi
-    //-kunnon testaaminen vaatii jokaisen käden luomisen testiluokkaan
-    //-         commit versio 1.8
+    // -tarkistukset kun pakassa on 2 jokeria tai enemmän
+    // -saavutuksia saldon summalle
+    // -tilastoja kuten suurin voitto ja paras käsi
+    // -kunnon testaaminen vaatii jokaisen käden luomisen testiluokkaan
+    // -        commit versio 1.8 ja merge masteriin
 
+    //-hashmapilla voisi parantaa käden tarkistusta ja tulosteen saamisen tehokkuutta, käsi<String arvo, list käsi>
     //-jaa käyttöliittymäluokkaa useampiin järkeviin osiin eri luokiksi
     //-lisää kommentointi tarvittaviin metodeihin
     //-korjaa metodien näkyvyydet
@@ -224,10 +224,10 @@ public class Kayttoliittyma {
             ArrayList<Pelaaja> pelaajalista = haePelaajalista();
             //System.out.println("--- JAVAPOKERI ---");
             System.out.println(
-                            "(1)  Uusi käyttäjä" + "\n" +
-                            "(2)  Lataa käyttäjä" + "\n" +
-                            "(3)  Poista käyttäjä" + "\n" +
-                            "(4)  Exit");
+                            "('U')  Uusi käyttäjä" + "\n" +
+                            "('L')  Lataa käyttäjä" + "\n" +
+                            "('P')  Poista käyttäjä" + "\n" +
+                            "('E')  Exit");
             System.out.print("Valitse syöttämällä kirjain: ");
             String input = lukija.nextLine();
             try {
@@ -440,7 +440,7 @@ public class Kayttoliittyma {
                     "--- VETOPOKERI ---" + "\n" +
                             "('V')  Vapaapeli" + "\n" +
                             "('K')  Kilpapeli" + "\n" +
-                            "('S')  Kauppa" + "\n" +
+                            "('P')  Parannukset" + "\n" +
                             "('O')  Ohjeet" + "\n" +
                             "('T')  Takaisin");
             System.out.print("Valitse pelimuoto syöttämällä kirjain: ");
@@ -454,16 +454,16 @@ public class Kayttoliittyma {
                     uudestaan = false;
                     System.out.println();
                     vetopokeriKilpapeli(pelaaja);
-                } else if (input.equals("S")) {
+                } else if (input.equals("P")) {
                     uudestaan = false;
                     System.out.println();
                     vetopokeriKauppa(pelaaja);
+                } else if (input.equals("O")) {
+                    new Ohjeet();
                 } else if (input.equals("T")) {
                     uudestaan = false;
                     System.out.println();
                     valitsePelimuoto(pelaaja);
-                } else if (input.equals("O")) {
-                    new Ohjeet();
                 } else {
                     throw new CustomException("Kelvoton syöte!");
                 }
@@ -480,7 +480,7 @@ public class Kayttoliittyma {
         while (uudestaan) {
             System.out.println();
             System.out.println(
-                    "--- VETOPOKERI KAUPPA ---\n" +
+                    "--- VETOPOKERI PARANNUKSET ---\n" +
                             "Saldo: " + pelaaja.getSaldo() + " kolikkoa\n");
             parannukset(pelaaja);
             //System.out.print("Valitse syöttämällä kirjain: ");
@@ -523,12 +523,12 @@ public class Kayttoliittyma {
             }
 
             System.out.println("Ostettavat parannukset:\n" +
-                    "('1') Lisää pakkaan 1. JOKERI     " + parannustenTilat[0] + "\n" +
-                    "('2') Lisää pakkaan 2. JOKERI     " + parannustenTilat[1] + "\n" +
-                    "('3') Lisää pakkaan 3. JOKERI     " + parannustenTilat[2] + "\n" +
-                    "('4') Lisää pakkaan 4. JOKERI     " + parannustenTilat[3] + "\n" +
-                    "('5') Lisää pakkaan 5. JOKERI     " + parannustenTilat[4] + "\n" +
-                    "('T') Takaisin");
+                    "('1')  Lisää pakkaan 1. JOKERI     " + parannustenTilat[0] + "\n" +
+                    "('2')  Lisää pakkaan 2. JOKERI     " + parannustenTilat[1] + "\n" +
+                    "('3')  Lisää pakkaan 3. JOKERI     " + parannustenTilat[2] + "\n" +
+                    "('4')  Lisää pakkaan 4. JOKERI     " + parannustenTilat[3] + "\n" +
+                    "('5')  Lisää pakkaan 5. JOKERI     " + parannustenTilat[4] + "\n" +
+                    "('T')  Takaisin");
             System.out.print("Valitse ostettava parannus: ");
             Scanner lukija = new Scanner(System.in);
             String input = lukija.nextLine();
@@ -738,7 +738,8 @@ public class Kayttoliittyma {
                 System.out.println("Virhe! " + e.getMessage());
                 System.out.println();
             } catch (NumberFormatException e) {
-                System.out.println("Virhe! Kelvoton syöte!\n" + "Syötä vaihdettavien korttien indeksit pilkuilla erotettuina. Esim. '2,4,5'");
+                System.out.println("Virhe! Kelvoton syöte!\n" +
+                        "Syötä vaihdettavien korttien indeksit pilkuilla erotettuina. Esim. '2,4,5'");
                 System.out.println();
             }
         }
@@ -807,7 +808,7 @@ public class Kayttoliittyma {
                             "('O')  Omat tulokset" + "\n" +
                             "('H')  Hall of Fame" + "\n" +
                             "('T')  Takaisin");
-            System.out.print("Valitse: ");
+            System.out.print("Valitse syöttämällä kirjain: ");
             String input = lukija.nextLine();
             try {
                 if (input.equals("P") && pelaaja.getSaldo() >= kilpapelinHinta) {
@@ -993,7 +994,7 @@ public class Kayttoliittyma {
         Boolean[] saavutustenTilat = pelaaja.getSaavutustenTilat();
         System.out.println("Pelaaja: " + pelaaja.getNimi());
         System.out.println("--- SAAVUTUKSET ---");
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 35; i++) {
             if ((saavutustenTilat[i])) {
                 String saavutus = saavutukset[i];
                 int saavutuksenMerkkimaara = saavutus.length();
@@ -1009,16 +1010,22 @@ public class Kayttoliittyma {
         }
         System.out.println();
         System.out.println("--- TILASTOT ---");
-        System.out.println("Voitot yhteensä: " + pelaaja.getYhteisvoitot() + " kolikkoa");
-        System.out.println("Häviöt yhteensä: " + pelaaja.getYhteishaviot() + " kolikkoa");
+        System.out.println("Suurin yksittäinen voitto: " + pelaaja.getSuurinVoitto() + " kolikkoa");
+        System.out.println("Saldon suurin arvo: " + pelaaja.getSuurinSaldo() + " kolikkoa");
+        System.out.println("Voitetut kolikot yhteensä: " + pelaaja.getYhteisvoitot());
+        System.out.println("Hävityt kolikot yhteensä: " + pelaaja.getYhteishaviot());
         double palautusprosentti = 0.0;
         if (pelaaja.getYhteishaviot() > 0) {
             palautusprosentti = (double) pelaaja.getYhteisvoitot()/pelaaja.getYhteishaviot() * 100;
         }
         DecimalFormat df = new DecimalFormat("#.##");
         System.out.println("Palautusprosentti: " + df.format(palautusprosentti) + "%");
-        System.out.println("Voitetut jaot: " + pelaaja.getVoitetutJaot());
-        System.out.println("Hävityt jaot: " + pelaaja.getHavitytJaot());
+        System.out.println("Voitettujen jakojen määrä: " + pelaaja.getVoitetutJaot());
+        System.out.println("Hävittyjen jakojen määrä: " + pelaaja.getHavitytJaot());
+
+        if ((Integer) pelaaja.getParasKasi()[0] < 10) {
+            pelaaja.tulostaParasKasi();
+        }
         System.out.println();
         System.out.println();
     }
