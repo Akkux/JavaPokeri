@@ -9,6 +9,7 @@ public class Pelaaja implements Serializable {
     private String nimi;
     private int saldo;
     private int panos;
+    private int lisapanos;
     private int kilpapelinSaldo;
     private ArrayList<Integer> kilpapelinTulokset;
     private ArrayList<Kortti> kasi;
@@ -21,9 +22,11 @@ public class Pelaaja implements Serializable {
     private int voitetutJaot;
     private int havitytJaot;
 
+
     public Pelaaja(String nimi) {
         this.nimi = nimi;
         panos = 0;
+        lisapanos = 0;
         saldo = 20;
         kilpapelinSaldo = 0;
         kilpapelinTulokset = alustaKilpapelinTulokset();
@@ -35,7 +38,8 @@ public class Pelaaja implements Serializable {
         yhteisvoitot = 0;
     }
 
-    public Pelaaja() {
+    public Pelaaja(ArrayList<Kortti> kortit) {
+        kasi = kortit;
     }
 
     public void setNimi(String nimi) {
@@ -55,6 +59,10 @@ public class Pelaaja implements Serializable {
     public void setPanos(int panos) {
         this.panos = panos;
     }
+
+    public int getLisapanos() {return lisapanos; }
+
+    public void setLisapanos(int lisapanos) { this.lisapanos = lisapanos; }
 
     public int getKilpapelinSaldo() {
         return kilpapelinSaldo;
@@ -347,9 +355,95 @@ public class Pelaaja implements Serializable {
         }
     }
 
+    public void kadenTarkistusKopio(String pelimuoto) {
+        ArrayList<Maa> kasiMaat = new ArrayList<>();
+        ArrayList<Integer> kasiArvot = new ArrayList<>();
+        yhteishaviot = yhteishaviot + panos;
+
+        //kasi =;
+
+        for (int i=0; i<5; i++) {
+            kasiMaat.add(kasi.get(i).getMaa());
+        }
+        for (int j=0; j<5; j++) {
+            kasiArvot.add(kasi.get(j).getNumeroarvo());
+        }
+
+
+        if (testaaKuningasVarisuora(kasiArvot, kasiMaat)) {
+            System.out.println("Tulos: Kuningasvärisuora!");
+            int kerroin = 250;
+            voitonmaksu(kerroin, 0, pelimuoto);
+
+        } else if (testaaViitoset(kasiArvot)) {
+            System.out.println("Tulos: Viitoset!");
+            int kerroin = 250;
+            voitonmaksu(kerroin, 1, pelimuoto);
+
+        } else if (testaaVarisuora(kasiArvot, kasiMaat)) {
+            System.out.println("Tulos: Värisuora!");
+            int kerroin = 75;
+            voitonmaksu(kerroin, 2, pelimuoto);
+
+        } else if (testaaNeloset(kasiArvot)) {
+            System.out.println("Tulos: Neloset!");
+            int kerroin = 50;
+            voitonmaksu(kerroin, 3, pelimuoto);
+
+        } else if (testaaTayskasi(kasiArvot)) {
+            System.out.println("Tulos: Täyskäsi!");
+            int kerroin = 20;
+            voitonmaksu(kerroin, 4, pelimuoto);
+
+        } else if (testaaVari(kasiMaat)) {
+            System.out.println("Tulos: Väri!");
+            int kerroin = 15;
+            voitonmaksu(kerroin, 5, pelimuoto);
+
+        } else if (testaaSuora(kasiArvot)) {
+            System.out.println("Tulos: Suora!");
+            int kerroin = 10;
+            voitonmaksu(kerroin, 6, pelimuoto);
+
+        } else if (testaaKolmoset(kasiArvot)) {
+            System.out.println("Tulos: Kolmoset!");
+            int kerroin = 5;
+            voitonmaksu(kerroin, 7, pelimuoto);
+
+        } else if (testaaKaksiParia(kasiArvot)) {
+            System.out.println("Tulos: Kaksi paria!");
+            int kerroin = 3;
+            voitonmaksu(kerroin, 8, pelimuoto);
+
+        } else if (testaaPari(kasiArvot)) {
+            System.out.println("Tulos: 10-pari tai parempi!");
+            int kerroin = 2;
+            voitonmaksu(kerroin, 9, pelimuoto);
+
+        } else {
+            System.out.println("Ei voittoa.");
+            viimeisinVoitto = 0;
+            viimeisinKadenArvo = -1;
+            havitytJaot++;
+        }
+    }
+
     public void voitonmaksu(int kerroin, int kadenArvo, String pelimuoto) {
 
         if (panos == 0) {
+            //Pyöristetään nollapanoksen voitot ylöspäin lähimpään kokonaislukuun
+            viimeisinVoitto = (kerroin+1)/2 ;
+            yhteisvoitot = yhteisvoitot + (kerroin+1)/2;
+        } else {
+            viimeisinVoitto = kerroin*panos;
+            yhteisvoitot = yhteisvoitot + kerroin*panos;
+        }
+
+        viimeisinKadenArvo = kadenArvo;
+        voitetutJaot++;
+
+        System.out.println("Voitit " + viimeisinVoitto + " kolikkoa.");
+        /*if (panos == 0) {
             if (kerroin > 2) {
                 System.out.println("Voitit " + (kerroin / 2) + 1 + " kolikkoa.");
                 viimeisinVoitto = (kerroin / 2) + 1;
@@ -357,7 +451,7 @@ public class Pelaaja implements Serializable {
                 yhteisvoitot = yhteisvoitot + (kerroin / 2) + 1;
                 voitetutJaot++;
             } else {
-                setSaldo(getSaldo()+kerroin/2);
+                //setSaldo(getSaldo()+kerroin/2);
             }
         } else {
             System.out.println("Voitit " + panos*kerroin + " kolikkoa.");
@@ -365,19 +459,14 @@ public class Pelaaja implements Serializable {
             viimeisinKadenArvo = kadenArvo;
             yhteisvoitot = yhteisvoitot + kerroin*panos;
             voitetutJaot++;
-        }
+        }*/
 
         if (pelimuoto.equals("vapaapeli")) {
-            if (panos == 0 && kerroin > 2) {
-                setSaldo(getSaldo()+(kerroin/2)+1);
-            } else {
-                setSaldo(getSaldo()+kerroin/2);
-            }
-            setSaldo(getSaldo()+panos*kerroin);
+                setSaldo(getSaldo() + viimeisinVoitto);
         }
 
         if (pelimuoto.equals("kilpapeli")) {
-            setKilpapelinSaldo(getKilpapelinSaldo()+panos*kerroin);
+            setKilpapelinSaldo(getKilpapelinSaldo() + viimeisinVoitto);
         }
 
     }

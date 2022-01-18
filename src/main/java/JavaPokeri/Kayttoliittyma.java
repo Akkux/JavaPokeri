@@ -66,7 +66,14 @@ public class Kayttoliittyma {
     // -vain ensimmäisen ostettavan parannuksen voi ostaa
     // -koodin siistiminen
     // -koodicommit 1.7.9
+    // -maven
+    // -pelaajatesti
+    // -koodikommit 1.7.10
+    //-vaihda valikkojen kirjaimet numeroiksi
     //-tarkistukset kun pakassa on 2 jokeria tai enemmän
+    //-saavutuksia saldon summalle
+    //-tilastoja kuten suurin voitto ja paras käsi
+    //-kunnon testaaminen vaatii jokaisen käden luomisen testiluokkaan
     //-         commit versio 1.8
 
     //-jaa käyttöliittymäluokkaa useampiin järkeviin osiin eri luokiksi
@@ -85,7 +92,7 @@ public class Kayttoliittyma {
     //-lisää blackjack pelimuoto
     //-uusia saavutuksia: voittoputki, häviöputki, salon määrä vapaapelissä
     //-vapaapeliin myös hall of fame
-
+    //-kokemuspisteet ja level-järjestelmä
 
 
 
@@ -749,23 +756,24 @@ public class Kayttoliittyma {
                     int maksimikorotus = pelaaja.getPanos()/2;
                     System.out.println("Suurin mahdollinen panoksen korotus: " + maksimikorotus + " kolikkoa");
                     System.out.print("Valitse korotuksen suuruus: ");
-                    int korotus = Integer.valueOf(lukija.nextLine());
-                    if (korotus >= 0 && korotus <= maksimikorotus && pelimuoto.equals("vapaapeli")) {
-                        if (korotus > pelaaja.getSaldo()) {
+                    int lisapanos = Integer.valueOf(lukija.nextLine());
+                    pelaaja.setLisapanos(lisapanos);
+                    if (lisapanos >= 0 && lisapanos <= maksimikorotus && pelimuoto.equals("vapaapeli")) {
+                        if (lisapanos > pelaaja.getSaldo()) {
                             throw new CustomException("Jäljellä oleva saldo: " + pelaaja.getSaldo() + " kolikkoa");
                         }
-                        pelaaja.setPanos(korotus + pelaaja.getPanos());
+                        pelaaja.setPanos(lisapanos + pelaaja.getPanos());
                         System.out.println("Uusi kokonaispanos: " + pelaaja.getPanos() + " kolikkoa");
-                        pelaaja.setSaldo(pelaaja.getSaldo() - korotus);
+                        pelaaja.setSaldo(pelaaja.getSaldo() - lisapanos);
                         System.out.println();
                         uudestaan = false;
-                    } else if (korotus >= 0 && korotus <= maksimikorotus && pelimuoto.equals("kilpapeli")) {
-                        if (korotus > pelaaja.getKilpapelinSaldo()) {
+                    } else if (lisapanos >= 0 && lisapanos <= maksimikorotus && pelimuoto.equals("kilpapeli")) {
+                        if (lisapanos > pelaaja.getKilpapelinSaldo()) {
                             throw new CustomException("Jäljellä oleva kilpapelin saldo: " + pelaaja.getKilpapelinSaldo() + " kolikkoa");
                         }
-                        pelaaja.setPanos(korotus + pelaaja.getPanos());
+                        pelaaja.setPanos(lisapanos + pelaaja.getPanos());
                         System.out.println("Uusi kokonaispanos: " + pelaaja.getPanos() + " kolikkoa");
-                        pelaaja.setKilpapelinSaldo(pelaaja.getKilpapelinSaldo() - korotus);
+                        pelaaja.setKilpapelinSaldo(pelaaja.getKilpapelinSaldo() - lisapanos);
                         uudestaan = false;
                     } else {
                         throw new CustomException("Kelvoton syöte!");
