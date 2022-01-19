@@ -567,6 +567,7 @@ public class Kayttoliittyma {
                     uudestaan = false;
                     System.out.println();
                     vetopokeriValinta(pelaaja);
+                    break;
 
                 } else {
                     throw new CustomException("Kelvoton syöte!");
@@ -836,7 +837,7 @@ public class Kayttoliittyma {
                         uusiKilpapeli(pelaaja, kilpapelinHinta);
                         break;
                     } else if (input2.equals("E")) {
-                        break;
+                        System.out.println();
                     } else {
                         throw new CustomException("Kelvoton syöte!");
                     }
