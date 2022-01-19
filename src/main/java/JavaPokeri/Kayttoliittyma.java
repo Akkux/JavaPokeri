@@ -49,7 +49,7 @@ public class Kayttoliittyma {
     // -voitetut ja hävityt jaot
     // -        commit5 versio 1.7
     // -pelaajalle lisätty parannukset attribuutti
-    // -palautusprosentin pyöristys
+    // -palautusprosentin poisto
     // -JavaPokeri banner
     // -bugi korjattu kilpapelistä
     // -bugi korjattu alkuvalikosta
@@ -73,7 +73,13 @@ public class Kayttoliittyma {
     // -saavutuksia saldon summalle
     // -tilastoja kuten suurin voitto ja paras käsi
     // -kunnon testaaminen vaatii jokaisen käden luomisen testiluokkaan
+    // -kilpapeli maksaa kaiken takaisin
     // -        commit versio 1.8 ja merge masteriin
+    //
+    //
+    //-puolet kilpapelin saldosta takaisin?
+    //-leveliin perustuva arvonimi
+    //-jokin viesti kun kaikki saavutukset on avattu
 
     //-hashmapilla voisi parantaa käden tarkistusta ja tulosteen saamisen tehokkuutta, käsi<String arvo, list käsi>
     //-jaa käyttöliittymäluokkaa useampiin järkeviin osiin eri luokiksi
@@ -92,7 +98,9 @@ public class Kayttoliittyma {
     //-lisää blackjack pelimuoto
     //-uusia saavutuksia: voittoputki, häviöputki, salon määrä vapaapelissä
     //-vapaapeliin myös hall of fame
-    //-kokemuspisteet ja level-järjestelmä
+    //-kokemuspisteet ja level-järjestelmä?
+    //-lisäjokerien ja muiden parannusten avaaminen levelin perusteella?
+    //-palautusprosentti on buginen ja ehkä huono idea
 
 
 
@@ -507,14 +515,14 @@ public class Kayttoliittyma {
     }
 
     public static void parannukset(Pelaaja pelaaja) {
-        int[] parannustenHinnat = {200, 1000, 2000, 15000, 50000};
-        String[] parannustenTilat = new String[5];
+        int[] parannustenHinnat = {200, 1000, 2000, 5000, 10000, 30000, 50000, 100000, 200000, 500000};
+        String[] parannustenTilat = new String[10];
         Boolean[] vetopokeriParannustenTilat = pelaaja.getVetopokeriParannustenTilat();
         boolean uudestaan = true;
 
         outerloop:
         while (uudestaan) {
-            for (int i=0; i<5; i++) {
+            for (int i=0; i<10; i++) {
                 if (vetopokeriParannustenTilat[i]) {
                     parannustenTilat[i] = "Käytössä";
                 } else {
@@ -528,13 +536,18 @@ public class Kayttoliittyma {
                     "('3')  Lisää pakkaan 3. JOKERI     " + parannustenTilat[2] + "\n" +
                     "('4')  Lisää pakkaan 4. JOKERI     " + parannustenTilat[3] + "\n" +
                     "('5')  Lisää pakkaan 5. JOKERI     " + parannustenTilat[4] + "\n" +
+                    "('6')  Lisää pakkaan 6. JOKERI     " + parannustenTilat[5] + "\n" +
+                    "('7')  Lisää pakkaan 7. JOKERI     " + parannustenTilat[6] + "\n" +
+                    "('8')  Lisää pakkaan 8. JOKERI     " + parannustenTilat[7] + "\n" +
+                    "('9')  Lisää pakkaan 9. JOKERI     " + parannustenTilat[8] + "\n" +
+                    "('10') Lisää pakkaan 10. JOKERI    " + parannustenTilat[9] + "\n" +
                     "('T')  Takaisin");
             System.out.print("Valitse ostettava parannus: ");
             Scanner lukija = new Scanner(System.in);
             String input = lukija.nextLine();
 
             try {
-                for (int i=0; i<5; i++) {
+                for (int i=0; i<10; i++) {
                     if (input.equals(String.valueOf(i+1))) {
                         if (vetopokeriParannustenTilat[i]) {
                             throw new CustomException("Kyseinen parannus on jo ostettu.");
@@ -543,7 +556,6 @@ public class Kayttoliittyma {
                             throw new CustomException("Parannukset on osetettava järjestyksessä.");
 
                         } else {
-                            //uudestaan = false;
                             parannuksenOsto(pelaaja, parannustenHinnat[i], i);
                             //Hypätään pois kesken jääneestä while loopista
                             break outerloop;
@@ -924,6 +936,7 @@ public class Kayttoliittyma {
                         pelaaja.tarkistaKilpapelinSaavutukset(pelaaja.getKilpapelinSaldo());
                         int tulos = pelaaja.getKilpapelinSaldo();
                         pelaaja.lisaaKilpapelinTulos(tulos);
+                        pelaaja.setSaldo(pelaaja.getSaldo() + pelaaja.getKilpapelinSaldo());
                         vetopokeriKilpapeli(pelaaja);
                     }
                     nykyinenJako++;
@@ -1014,17 +1027,19 @@ public class Kayttoliittyma {
         System.out.println("Saldon suurin arvo: " + pelaaja.getSuurinSaldo() + " kolikkoa");
         System.out.println("Voitetut kolikot yhteensä: " + pelaaja.getYhteisvoitot());
         System.out.println("Hävityt kolikot yhteensä: " + pelaaja.getYhteishaviot());
-        double palautusprosentti = 0.0;
-        if (pelaaja.getYhteishaviot() > 0) {
-            palautusprosentti = (double) pelaaja.getYhteisvoitot()/pelaaja.getYhteishaviot() * 100;
-        }
-        DecimalFormat df = new DecimalFormat("#.##");
-        System.out.println("Palautusprosentti: " + df.format(palautusprosentti) + "%");
+        //double palautusprosentti = 0.0;
+        //if (pelaaja.getYhteishaviot() > 0) {
+            //palautusprosentti = (double) pelaaja.getYhteisvoitot()/pelaaja.getYhteishaviot() * 100;
+        //}
+        //DecimalFormat df = new DecimalFormat("#.##");
+        //System.out.println("Palautusprosentti: " + df.format(palautusprosentti) + "%");
         System.out.println("Voitettujen jakojen määrä: " + pelaaja.getVoitetutJaot());
         System.out.println("Hävittyjen jakojen määrä: " + pelaaja.getHavitytJaot());
 
         if ((Integer) pelaaja.getParasKasi()[0] < 10) {
             pelaaja.tulostaParasKasi();
+        } else {
+            System.out.println("Paras käsi: -");
         }
         System.out.println();
         System.out.println();

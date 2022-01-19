@@ -37,6 +37,7 @@ public class Ohjeet {
                 "   suoritetaan täydestä korttipakasta. Pelimuodossa pyritään kasvattamaan kolikoiden määrä mahdollisimman suureksi\n" +
                 "   näiden 5 jaon aikana. Kilpapelissä jokaisen jaon minimipanos on 10 kolikkoa. Kilpapelissä panoksen suuruudella\n" +
                 "   ei ole ylärajaa. Pelaaja häviää, jos kilpapelin saldo tippuu alle tarvittavan minimipanoksen. Uuden kilpapelin\n" +
-                "   aloittaminen maksaa pelaajalle aina 100 kolikkoa. Kolikoita voi kerätä lisää vetopokerin vapaapelistä.\n\n");
+                "   aloittaminen maksaa pelaajalle aina 100 kolikkoa. Kolikoita voi kerätä lisää vetopokerin vapaapelistä.\n" +
+                "   Kilpapelin lopullinen tulos lisätään lopuksi aina pelaajan saldoon.\n\n");
     }
 }

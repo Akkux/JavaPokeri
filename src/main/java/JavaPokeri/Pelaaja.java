@@ -1,9 +1,7 @@
 package JavaPokeri;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Pelaaja implements Serializable {
     private String nimi;
@@ -485,6 +483,84 @@ public class Pelaaja implements Serializable {
         }
     }
 
+    public void kadenTarkistusTest(String pelimuoto) {
+        ArrayList<Maa> kasiMaat = new ArrayList<>();
+        ArrayList<Integer> kasiArvot = new ArrayList<>();
+
+        for (int i=0; i<5; i++) {
+            kasiMaat.add(kasi.get(i).getMaa());
+        }
+        for (int j=0; j<5; j++) {
+            kasiArvot.add(kasi.get(j).getNumeroarvo());
+        }
+
+        //Tarkistetaan toteuttaako käsi jonkin voittavan käden kriteerit
+        if (testaaKuningasVarisuora(kasiArvot, kasiMaat)) {
+            System.out.println("Tulos: Kuningasvärisuora!");
+            int kerroin = 250;
+            voitonmaksu(kerroin, 0, pelimuoto);
+
+
+        } else if (testaaViitoset(kasiArvot)) {
+            System.out.println("Tulos: Viitoset!");
+            int kerroin = 250;
+            voitonmaksu(kerroin, 1, pelimuoto);
+
+
+        } else if (testaaVarisuora(kasiArvot, kasiMaat)) {
+            System.out.println("Tulos: Värisuora!");
+            int kerroin = 75;
+            voitonmaksu(kerroin, 2, pelimuoto);
+
+        } else if (testaaNeloset(kasiArvot)) {
+            System.out.println("Tulos: Neloset!");
+            int kerroin = 50;
+            voitonmaksu(kerroin, 3, pelimuoto);
+
+        } else if (testaaTayskasi(kasiArvot)) {
+            System.out.println("Tulos: Täyskäsi!");
+            int kerroin = 20;
+            voitonmaksu(kerroin, 4, pelimuoto);
+
+
+        } else if (testaaVari(kasiMaat)) {
+            System.out.println("Tulos: Väri!");
+            int kerroin = 15;
+            voitonmaksu(kerroin, 5, pelimuoto);
+
+
+        } else if (testaaSuora(kasiArvot)) {
+            System.out.println("Tulos: Suora!");
+            int kerroin = 10;
+            voitonmaksu(kerroin, 6, pelimuoto);
+
+
+        } else if (testaaKolmoset(kasiArvot)) {
+            System.out.println("Tulos: Kolmoset!");
+            int kerroin = 5;
+            voitonmaksu(kerroin, 7, pelimuoto);
+
+
+        } else if (testaaKaksiParia(kasiArvot)) {
+            System.out.println("Tulos: Kaksi paria!");
+            int kerroin = 3;
+            voitonmaksu(kerroin, 8, pelimuoto);
+
+
+        } else if (testaaPari(kasiArvot)) {
+            System.out.println("Tulos: 10-A pari!");
+            int kerroin = 2;
+            voitonmaksu(kerroin, 9, pelimuoto);
+
+
+        } else {
+            System.out.println("Ei voittoa.");
+            viimeisinVoitto = 0;
+            viimeisinKadenArvo = -1;
+            havitytJaot++;
+        }
+    }
+
 
     public void voitonmaksu(int kerroin, int kadenArvo, String pelimuoto) {
 
@@ -537,7 +613,7 @@ public class Pelaaja implements Serializable {
 
     }
 
-    public int kasiArvotIlmanJokereitaSumma() {
+    public boolean SamojaArvoja() {
         ArrayList<Integer> kasiArvotIlmanJokereita = new ArrayList<>();
         for (int j=0; j<5; j++) {
             kasiArvotIlmanJokereita.add(kasi.get(j).getNumeroarvo());
@@ -546,9 +622,13 @@ public class Pelaaja implements Serializable {
         for (int i=0; i<jokerienMaara; i++) {
             kasiArvotIlmanJokereita.remove(Integer.valueOf(0));
         }
-        int kasiArvotIlmanJokereitaSumma = kasiArvotIlmanJokereita.stream().mapToInt(i -> i).sum();
 
-        return kasiArvotIlmanJokereitaSumma;
+        Set<Integer> set = new HashSet<Integer>(kasiArvotIlmanJokereita);
+
+        if(set.size() < kasiArvotIlmanJokereita.size()){
+            return true;
+        }
+        return false;
     }
 
 
@@ -679,16 +759,16 @@ public class Pelaaja implements Serializable {
         int jokerienMaara = Collections.frequency(kasiArvot, 0);
 
         //Jos jokereita on yksi, normaaleista neljästä kortista suurimman ja pienimmän arvon
-        // etäisyys toisistaan saa olla enintään 4, mutta vähintään 1.
+        // etäisyys toisistaan saa olla enintään 4, mutta vähintään 3. Duplikaattiarvoja ei myöskään saa olla.
         int suurinNormaalinKortinArvo = kasiArvot.get(4);
         int pieninNormaalinKortinArvo = kasiArvot.get(1);
         int arvojenEtaisyys = suurinNormaalinKortinArvo-pieninNormaalinKortinArvo;
-        if (jokerienMaara == 1 && arvojenEtaisyys < 5 && arvojenEtaisyys > 2) {
+        if (jokerienMaara == 1 && arvojenEtaisyys < 5 && arvojenEtaisyys > 2 && !SamojaArvoja()) {
             return true;
         }
 
         //Jos jokereita on kaksi, normaaleista kolmesta kortista suurimman ja pienimmän arvon
-        // etäisyys toisistaan saa olla enintään 4, mutta vähintään 1.
+        // etäisyys toisistaan saa olla enintään 4, mutta vähintään 2.
         suurinNormaalinKortinArvo = kasiArvot.get(4);
         pieninNormaalinKortinArvo = kasiArvot.get(2);
         arvojenEtaisyys = suurinNormaalinKortinArvo-pieninNormaalinKortinArvo;

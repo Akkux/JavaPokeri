@@ -221,7 +221,7 @@ class PelaajaTest {
     }
 
     public String output(Pelaaja pelaaja) {
-        pelaaja.kadenTarkistus("vapaapeli");
+        pelaaja.kadenTarkistusTest("vapaapeli");
         return outputStreamCaptor.toString().trim();
     }
 
