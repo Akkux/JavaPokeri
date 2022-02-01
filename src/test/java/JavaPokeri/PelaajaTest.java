@@ -166,11 +166,11 @@ class PelaajaTest {
                 new Kortti(Maa.JOKERI, Arvo.JOKERI) ));
 
         ArrayList<Kortti> jokerikolmoset1 = new ArrayList<>(List.of(
-                new Kortti(Maa.PATA, Arvo.KAKSI),
+                new Kortti(Maa.PATA, Arvo.KUNINGAS),
+                new Kortti(Maa.RISTI, Arvo.ÄSSÄ),
                 new Kortti(Maa.JOKERI, Arvo.JOKERI),
-                new Kortti(Maa.JOKERI, Arvo.JOKERI),
-                new Kortti(Maa.PATA, Arvo.YHDEKSÄN),
-                new Kortti(Maa.HERTTA, Arvo.KYMMENEN) ));
+                new Kortti(Maa.PATA, Arvo.ÄSSÄ),
+                new Kortti(Maa.RUUTU, Arvo.KAHDEKSAN) ));
 
         ArrayList<Kortti> jokeripari1 = new ArrayList<>(List.of(
                 new Kortti(Maa.JOKERI, Arvo.JOKERI),
@@ -220,7 +220,7 @@ class PelaajaTest {
         System.setOut(standardOut);
     }
 
-    public String output(Pelaaja pelaaja) {
+    /*public String output(Pelaaja pelaaja) {
         pelaaja.kadenTarkistusTest("vapaapeli");
         return outputStreamCaptor.toString().trim();
     }
@@ -230,7 +230,7 @@ class PelaajaTest {
     void kadenTarkistusTest(ArrayList<Kortti> kasi, String output) {
         assertEquals(
                 output, output(new Pelaaja(kasi)));
-    }
+    }*/
 
 
 }

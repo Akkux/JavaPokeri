@@ -19,7 +19,12 @@ public class Parannukset implements AvattavatAsiat {
                 "Lisää pakkaan 2. JOKERI",
                 "Lisää pakkaan 3. JOKERI",
                 "Lisää pakkaan 4. JOKERI",
-                "Lisää pakkaan 5. JOKERI"
+                "Lisää pakkaan 5. JOKERI",
+                "Lisää pakkaan 6. JOKERI",
+                "Lisää pakkaan 7. JOKERI",
+                "Lisää pakkaan 8. JOKERI",
+                "Lisää pakkaan 9. JOKERI",
+                "Lisää pakkaan 10. JOKERI"
         };
         return jasenet;
     }
