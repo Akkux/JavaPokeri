@@ -1,49 +1,35 @@
 package JavaPokeri;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 class Kortti implements Serializable {
 
-    private Maa maa;
-    private Arvo arvo;
+    private final Maa maa;
+    private final Arvo arvo;
 
-    public Kortti(Maa maa, Arvo arvo) {
+    Kortti(Maa maa, Arvo arvo) {
         this.maa = maa;
         this.arvo = arvo;
     }
 
-    public Kortti() {
-    }
-
-    public void setMaa(Maa maa) {
-        this.maa = maa;
-    }
-
-    public void setArvo(Arvo arvo) {
-        this.arvo = arvo;
-    }
-
-    public Arvo getArvo() {
-        return arvo;
-    }
-
-    public Maa getMaa() {
+    Maa getMaa() {
         return maa;
     }
 
-    public int getNumeroarvo() {
+    int getNumeroarvo() {
         return arvo.numeroarvo;
     }
 
     @Override
+    /** Metodi määrittelee kuinka monta välilyöntiä maan nimeä ennen tulostetaan,
+        jotta korttien arvot tulevat samalle pystyriville kättä tulostaessa. */
     public String toString() {
-        /*if (maa.symboli == "JOKERI") {
-            return maa.symboli;
-        }*/ if (maa.symboli == "PATA") {
+        if (Objects.equals(maa.symboli, "PATA")) {
             return "  " + maa.symboli + " " + arvo.symboli;
-        } if (maa.symboli == "RISTI") {
+        } if (Objects.equals(maa.symboli, "RISTI")) {
             return " " + maa.symboli + " " + arvo.symboli;
-        } if (maa.symboli == "RUUTU") {
+        } if (Objects.equals(maa.symboli, "RUUTU")) {
             return " " + maa.symboli + " " + arvo.symboli;
         }
         return  maa.symboli + " " + arvo.symboli;

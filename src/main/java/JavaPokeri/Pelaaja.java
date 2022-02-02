@@ -6,7 +6,7 @@ import java.util.*;
 import static java.lang.Math.addExact;
 import static java.lang.Math.multiplyExact;
 
-public class Pelaaja implements Serializable {
+class Pelaaja implements Serializable {
     private String nimi;
     private int saldo;
     private int suurinSaldo;
@@ -26,7 +26,7 @@ public class Pelaaja implements Serializable {
     private int havitytJaot;
 
 
-    public Pelaaja(String nimi) {
+    Pelaaja(String nimi) {
         this.nimi = nimi;
         saldo = 20;
         suurinSaldo = 20;
@@ -46,121 +46,90 @@ public class Pelaaja implements Serializable {
         havitytJaot = 0;
     }
 
-    public Pelaaja(ArrayList<Kortti> kortit) {
-        kasi = kortit;
-    }
 
-    public String getNimi() {return nimi;}
+    Pelaaja(ArrayList<Kortti> kortit) {kasi = kortit;}
 
-    public void setNimi(String nimi) {
-        this.nimi = nimi;
-    }
+    String getNimi() {return nimi;}
 
-    public int getSaldo() {
+    int getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(int saldo) {
+    void setSaldo(int saldo) {
         this.saldo = saldo;
     }
 
-    public int getSuurinSaldo() { return suurinSaldo; }
+    int getSuurinSaldo() { return suurinSaldo; }
 
-    public void setSuurinSaldo(int suurinSaldo) { this.suurinSaldo = suurinSaldo; }
+    void setSuurinSaldo(int suurinSaldo) { this.suurinSaldo = suurinSaldo; }
 
-    public int getPanos() {
+    int getPanos() {
         return panos;
     }
 
-    public void setPanos(int panos) {
+    void setPanos(int panos) {
         this.panos = panos;
     }
 
-    public int getKilpapelinSaldo() {
+    int getKilpapelinSaldo() {
         return kilpapelinSaldo;
     }
 
-    public void setKilpapelinSaldo(int kilpapelinSaldo) {
+    void setKilpapelinSaldo(int kilpapelinSaldo) {
         this.kilpapelinSaldo = kilpapelinSaldo;
     }
 
-    public ArrayList<Integer> getKilpapelinTulokset() {
+    ArrayList<Integer> getKilpapelinTulokset() {
         return kilpapelinTulokset;
     }
 
-    public void setKilpapelinTulokset(ArrayList<Integer> kilpapelinTulokset) {
-        this.kilpapelinTulokset = kilpapelinTulokset;
-    }
+    Object[] getParasKasi() { return parasKasi; }
 
-    public ArrayList<Kortti> getKasi() {
-        return kasi;
-    }
-
-    public void setKasi(ArrayList<Kortti> kasi) {
-        this.kasi = kasi;
-    }
-
-    public Object[] getParasKasi() { return parasKasi; }
-
-    public void setParasKasi(Object[] parasKasi) { this.parasKasi = parasKasi; }
-
-    public Kortti getKortti(int i) {
-        return kasi.get(i);
-    }
-
-    public Boolean[] getSaavutustenTilat() {
+    Boolean[] getSaavutustenTilat() {
         return saavutustenTilat;
     }
 
-    public Boolean[] getVetopokeriParannustenTilat() {return vetopokeriParannustenTilat; }
+    Boolean[] getVetopokeriParannustenTilat() {return vetopokeriParannustenTilat; }
 
-    public void setVetopokeriParannuksenTilat(Boolean[] vetopokeriParannukset) {
+    void setVetopokeriParannuksenTilat(Boolean[] vetopokeriParannukset) {
         this.vetopokeriParannustenTilat = vetopokeriParannukset;
     }
 
-    public int getViimeisinVoitto() {
-        return viimeisinVoitto;
-    }
+    int getSuurinVoitto() { return suurinVoitto; }
 
-    public int getViimeisinKadenArvo() {
-        return viimeisinKadenArvo;
-    }
-
-    public int getSuurinVoitto() { return suurinVoitto; }
-
-    public int getYhteisvoitot() {
+    int getYhteisvoitot() {
         return yhteisvoitot;
     }
 
-    public void setYhteisvoitot(int yhteisvoitot) {
-        this.yhteisvoitot = yhteisvoitot;
-    }
-
-    public int getYhteishaviot() {
+    int getYhteishaviot() {
         return yhteishaviot;
     }
 
-    public int getVoitetutJaot() {
+    int getVoitetutJaot() {
         return voitetutJaot;
     }
 
-    public int getHavitytJaot() {
+    int getHavitytJaot() {
         return havitytJaot;
     }
 
-    public ArrayList<Kortti> alustaKasi() {
+    /** Metodi alustaa pelaajan käden yhdellä kortilla */
+    private ArrayList<Kortti> alustaKasi() {
         ArrayList<Kortti> kasi = new ArrayList<Kortti>(List.of(
                 new Kortti(Maa.JOKERI, Arvo.JOKERI)));
         return kasi;
     }
 
-    public ArrayList<Integer> alustaKilpapelinTulokset() {
+    /** Metodi alustaa pelaajan vetopokerin kilpapelin tulokset sisältävän listan yhdellä 0:lla. */
+    private ArrayList<Integer> alustaKilpapelinTulokset() {
         ArrayList<Integer> tulokset = new ArrayList<>(List.of(0));
         tulokset.add(0);
         return tulokset;
     }
 
-    public Boolean[] alustaSaavutustenTilat() {
+    /** Metodi alustaa pelaajan kaikki vetopokerin saavutukset tilaan false, mikä tarkoittaa sitä,
+     että saavutuksia ei vielä ole avattu */
+    private Boolean[] alustaSaavutustenTilat() {
         Boolean[] saavutustenTilat = new Boolean[40];
         for (int i=0; i<40; i++) {
             saavutustenTilat[i] = false;
@@ -168,26 +137,35 @@ public class Pelaaja implements Serializable {
         return saavutustenTilat;
     }
 
-    public Boolean[] alustaVetopokeriParannustenTilat() {
-        Boolean[] vetopokeriParannustenTilat = new Boolean[20];
-        for (int i=0; i<20; i++) {
+    /** Metodi alustaa pelaajan kaikki vetopokerin parannukset tilaan false, mikä tarkoittaa sitä,
+        että parannuksia ei vielä ole ostettu */
+    private Boolean[] alustaVetopokeriParannustenTilat() {
+        Boolean[] vetopokeriParannustenTilat = new Boolean[10];
+        for (int i=0; i<10; i++) {
             vetopokeriParannustenTilat[i] = false;
         }
         return vetopokeriParannustenTilat;
     }
 
-    public Object[] alustaParasKasi() {
-        ArrayList<Kortti> huonokasi = new ArrayList<>(List.of(
+    /** Metodi alustaa pelaajan parasKasi attribuutin, joka sisältää tiedot pelaajan arvokkaimman koskaan
+        saaman pokerikäden korteista ja kyseisen käden arvosta asteikolla 0-9, jossa 0 on arvokkain käsi. */
+    private Object[] alustaParasKasi() {
+        // Alustetaan parasKasi-attribuutti huonolla pokerikädellä.
+        ArrayList<Kortti> alustusKasi = new ArrayList<>(List.of(
                 new Kortti(Maa.PATA, Arvo.KAKSI),
                 new Kortti(Maa.PATA, Arvo.KOLME),
                 new Kortti(Maa.PATA, Arvo.NELJÄ),
-                new Kortti(Maa.PATA, Arvo.YHDEKSÄN),
-                new Kortti(Maa.HERTTA, Arvo.KYMMENEN) ));
-        Object[] paraskasi = {10, huonokasi};
+                new Kortti(Maa.PATA, Arvo.KUUSI),
+                new Kortti(Maa.HERTTA, Arvo.SEITSEMÄN) ));
+
+        // Vain käsiä joiden arvo on välillä 0-9 käytetään muissa metodeissa.
+        Object[] paraskasi = {10, alustusKasi};
         return paraskasi;
     }
 
-    public void tulostaKasi(boolean korttienVaihtoTapahtunut) {
+
+    /** Metodi tulostaa pelaajan kädessä olevat 5 pelikorttia allekkain ja numeroituna. */
+    void tulostaKasi(boolean korttienVaihtoTapahtunut) {
         System.out.println();
         if (korttienVaihtoTapahtunut) {
             System.out.println("Käsi:");
@@ -202,50 +180,76 @@ public class Pelaaja implements Serializable {
         System.out.println();
     }
 
-    public void tulostaParasKasi() {
+
+    /** Metodi tulostaa näkyviin pelaajan arvokkaimman koskaan saaman pokerikäden. */
+    void tulostaParasKasi() {
+        String[] kasienArvot = pokerikasienArvot();
+        ArrayList<Kortti> parasPokerikasi = (ArrayList<Kortti>) parasKasi[1];
         System.out.println();
-        ArrayList<Kortti> paraskasi = (ArrayList<Kortti>) parasKasi[1];
-        System.out.println("Paras käsi: ");
-        System.out.println(paraskasi.get(0));
-        System.out.println(paraskasi.get(1));
-        System.out.println(paraskasi.get(2));
-        System.out.println(paraskasi.get(3));
-        System.out.println(paraskasi.get(4));
+        System.out.println("Paras käsi: " + kasienArvot[(Integer)parasKasi[0]]);
+        System.out.println(parasPokerikasi.get(0));
+        System.out.println(parasPokerikasi.get(1));
+        System.out.println(parasPokerikasi.get(2));
+        System.out.println(parasPokerikasi.get(3));
+        System.out.println(parasPokerikasi.get(4));
         System.out.println();
     }
 
-    public void jaaUusiKasi(ArrayList<Kortti> kasi) {
+
+    /** Metodi palauttaa merkkijonotaulun, joka sisältäö kaikki pokerikäsien arvot
+        järjestyksessä parhaimmasta huonoimpaan. */
+    private String[] pokerikasienArvot() {
+        String[] arvot = {"Kuningasvärisuora", "Viitoset", "Värisuora", "Neloset",
+                "Täyskäsi", "Väri", "Suora", "Kolmoset", "Kaksi paria", "10-A pari"};
+        return arvot;
+    }
+
+
+    /** Metodi vaihtaa pelaajan kädessä olevat kortit uusiin metodin saamiin kortteihin. */
+    void jaaUusiKasi(ArrayList<Kortti> kasi) {
         this.kasi = kasi;
     }
 
-    public void lisaaKilpapelinTulos(int tulos) {
+
+    /** Metodi lisää pelaajan vetopokerin kilpapelissä saaman lopputuloksen pelaajan omat tulokset
+        sisältävään listaan ja järjestää sen suurimmasta pienimpääm. */
+    void lisaaKilpapelinTulos(int tulos) {
         ArrayList<Integer> tuloslista = getKilpapelinTulokset();
         tuloslista.add(tulos);
         Collections.sort(tuloslista, Collections.reverseOrder());
         this.kilpapelinTulokset = tuloslista;
     }
 
-    public void vaihdaKortteja(String[] vaihdettavat, Korttipakka pakka) throws CustomException{
+
+    /** Metodi vaihtaa pelaajan kädestä tietyt kortit samasta pakasta nostettuihin uusiin kortteihin. */
+    void vaihdaKortteja(String[] vaihdettavat, Korttipakka pakka) throws CustomException{
+
         ArrayList<Integer> vaihdettavatInt = new ArrayList<>();
         for (String vaihdettava : vaihdettavat) {
             vaihdettavatInt.add(Integer.valueOf(vaihdettava));
         }
+
         for (int i : vaihdettavatInt) {
             if (i < 1 || i > 5 || vaihdettavatInt.size() > 5) {
                 throw new CustomException("Kelvoton syöte!\n" + "Syötä vaihdettavien korttien indeksit pilkuilla erotettuina. Esim. '2,4,5'");
             }
         }
+
         for(int vaihdettava : vaihdettavatInt) {
             kasi.set(vaihdettava-1, pakka.nostaUusiKortti());
         }
     }
 
-    public void tarkistaSaavutukset() {
+
+    /** Metodi tekee yhden jaon tuloksena avattujen saavutusten tulosteista listan,
+        ja tulostaa ne jaon tulosten jälkeen allekkain konsoliin */
+    void tarkistaSaavutukset() {
+
         ArrayList<String> tulosteet1 = tarkistaPokerikadenSaavutukset(viimeisinKadenArvo);
         ArrayList<String> tulosteet2 = tarkistaVoittosummanSaavutukset(viimeisinVoitto);
         ArrayList<String> tulosteet3 = tarkistaSaldonSaavutukset(saldo);
         ArrayList<String> tulosteet4 = new ArrayList<>();
-        //Tehdään jaon tuloksena avattujen saavutusten tulosteista lista, jotta ne voidaan tulostaa siististi konsoliin
+
         for (int i=1; i<tulosteet1.size(); i++) {
             tulosteet4.add(tulosteet1.get(i));
         }
@@ -262,13 +266,13 @@ public class Pelaaja implements Serializable {
             }
             System.out.println();
         }
-
     }
 
-    public void tarkistaKilpapelinSaavutukset(int kilpapelinTulos) {
-        //Tarkistetaan kilpapelin tulokseen perustuvat saavutukset
 
-        //Tehdään viesteistä lista, jotta ne voidaan tulostaa lopuksi pakettina jota ennen ja jälkeen on kuitenkin tyhjä rivi
+    /** Metodi tarkistaa saako pelaaja kilpapelin lopputulokseen perustuvia saavutuksia ja tulostaa avattujen
+        saavutusten tulosteet allekkain konsoliin. */
+    void tarkistaKilpapelinSaavutukset(int kilpapelinTulos) {
+
         ArrayList<String> tulosteet = new ArrayList<>();
         tulosteet.add(" ");
         String[] saavutukset = new Saavutukset().getJasenet();
@@ -290,8 +294,10 @@ public class Pelaaja implements Serializable {
         }
     }
 
-    public ArrayList<String> tarkistaPokerikadenSaavutukset(int viimeisinKadenArvo) {
-        //Tarkistetaan pokerikäden arvoon perustuvat saavutukset
+
+    /** Metodi tarkistaa saako pelaaja pokerikäden arvoon perustuvia saavutuksia ja palauttaa avattujen
+     saavutusten tulosteet yhtenä listana. */
+    private ArrayList<String> tarkistaPokerikadenSaavutukset(int viimeisinKadenArvo) {
 
         String[] saavutukset = new Saavutukset().getJasenet();
         ArrayList<String> tulosteet = new ArrayList<>();
@@ -307,8 +313,11 @@ public class Pelaaja implements Serializable {
         return tulosteet;
     }
 
-    public ArrayList<String> tarkistaVoittosummanSaavutukset(int voitto) {
-        //Tarkistetaan voiton suuruuteen perustuvat saavutukset
+
+    /** Metodi tarkistaa saako pelaaja yhden pokerikäden voittosumman suuruuteen perustuvia saavutuksia ja
+        palauttaa avattujen saavutusten tulosteet yhtenä listana. */
+    private ArrayList<String> tarkistaVoittosummanSaavutukset(int voitto) {
+
         int[] voittosummat = {100000, 50000, 10000, 5000, 1000, 750, 500, 200, 100, 20};
         String[] saavutukset = new Saavutukset().getJasenet();
         ArrayList<String> tulosteet = new ArrayList<>();
@@ -323,8 +332,11 @@ public class Pelaaja implements Serializable {
         return tulosteet;
     }
 
-    public ArrayList<String> tarkistaSaldonSaavutukset(int saldo) {
-        //Tarkistetaan saldon suuruuteen perustuvat saavutukset
+
+    /** Metodi tarkistaa saako pelaaja saldon suuruuteen perustuvia saavutuksia ja
+     palauttaa avattujen saavutusten tulosteet yhtenä listana. */
+    ArrayList<String> tarkistaSaldonSaavutukset(int saldo) {
+
         int[] saldorajat = {1000000, 100000, 10000, 1000, 100};
         String[] saavutukset = new Saavutukset().getJasenet();
         ArrayList<String> tulosteet = new ArrayList<>();
@@ -339,9 +351,14 @@ public class Pelaaja implements Serializable {
         return tulosteet;
     }
 
-    public void kadenTarkistus(String pelimuoto) throws ArithmeticException{
+
+    /** Metodi käynnistää voitonmaksutapahtuman jos pelaajan käsi toteuttaa jonkin voittavan pokerikäden kriteerit ja
+        selvittää tarvitseeko pelaajan parasKasi-attribuuttia päivittää.  */
+    void kadenTarkistus(String pelimuoto) throws ArithmeticException{
+
         ArrayList<Maa> kasiMaat = new ArrayList<>();
         ArrayList<Integer> kasiArvot = new ArrayList<>();
+
         yhteishaviot = yhteishaviot + panos;
 
         for (int i=0; i<5; i++) {
@@ -350,11 +367,6 @@ public class Pelaaja implements Serializable {
         for (int j=0; j<5; j++) {
             kasiArvot.add(kasi.get(j).getNumeroarvo());
         }
-
-        int kadenArvojenSumma = kasiArvot.stream().mapToInt(i -> i).sum();
-
-        //Tätä paremmaksi laittamalla mahdolliset tulostukset tauluun ja tiivistämällä kaikki yhteen blokkiin
-        //silloin myös
 
         ArrayList<Kortti> paraskasi = (ArrayList<Kortti>) parasKasi[1];
         ArrayList<Integer> paraskasiarvot = new ArrayList<>();
@@ -366,112 +378,93 @@ public class Pelaaja implements Serializable {
         int parasKasiJokerienMaara = Collections.frequency(paraskasiarvot, 0);
 
 
-        // Tarkistetaan toteuttaako käsi jonkin voittavan käden kriteerit
+        // Tarkistetaan toteuttaako käsi jonkin voittavan pokerikäden kriteerit
+
         if (testaaKuningasVarisuora(kasiArvot, kasiMaat)) {
             System.out.println("Tulos: Kuningasvärisuora!");
-            int kerroin = 250;
-            voitonmaksu(kerroin, 0, pelimuoto);
+            voitonmaksu(250, 0, pelimuoto);
 
             // Vaihdetaan kyseinen käsi uudeksi parhaaksi kädeksi jos se on arvoltaan parempi
             if ((Integer) parasKasi[0] > 0 || (kasiJokerienMaara > parasKasiJokerienMaara && (Integer) parasKasi[0] == 0)) {
-                parasKasi[0] = 0;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(0);
             }
 
         } else if (testaaViitoset(kasiArvot)) {
             System.out.println("Tulos: Viitoset!");
-            int kerroin = 250;
-            voitonmaksu(kerroin, 1, pelimuoto);
+            voitonmaksu(250, 1, pelimuoto);
 
             if ((Integer) parasKasi[0] > 1 || (kasi.get(4).getNumeroarvo() > paraskasiarvot.get(4) &&
                     kasiJokerienMaara >= parasKasiJokerienMaara && (Integer) parasKasi[0] == 1)) {
-                parasKasi[0] = 1;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(1);
             }
 
         } else if (testaaVarisuora(kasiArvot, kasiMaat)) {
             System.out.println("Tulos: Värisuora!");
-            int kerroin = 75;
-            voitonmaksu(kerroin, 2, pelimuoto);
+            voitonmaksu(75, 2, pelimuoto);
 
             if ((Integer) parasKasi[0] > 2 || (kasi.get(4).getNumeroarvo() > paraskasiarvot.get(4) &&
                     kasiJokerienMaara >= parasKasiJokerienMaara && (Integer) parasKasi[0] == 2)) {
-                parasKasi[0] = 2;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(2);
             }
 
         } else if (testaaNeloset(kasiArvot)) {
             System.out.println("Tulos: Neloset!");
-            int kerroin = 50;
-            voitonmaksu(kerroin, 3, pelimuoto);
+            voitonmaksu(50, 3, pelimuoto);
 
             if ((Integer) parasKasi[0] > 3 || (kasi.get(4).getNumeroarvo() > paraskasiarvot.get(4) &&
                     kasiJokerienMaara >= parasKasiJokerienMaara && (Integer) parasKasi[0] == 3)) {
-                parasKasi[0] = 3;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(3);
             }
 
         } else if (testaaTayskasi(kasiArvot)) {
             System.out.println("Tulos: Täyskäsi!");
-            int kerroin = 20;
-            voitonmaksu(kerroin, 4, pelimuoto);
+            voitonmaksu(20, 4, pelimuoto);
 
             if ((Integer) parasKasi[0] > 4 || (kasi.get(4).getNumeroarvo() > paraskasiarvot.get(4) &&
                     kasiJokerienMaara >= parasKasiJokerienMaara && (Integer) parasKasi[0] == 4)) {
-                parasKasi[0] = 4;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(4);
             }
 
         } else if (testaaVari(kasiMaat)) {
             System.out.println("Tulos: Väri!");
-            int kerroin = 15;
-            voitonmaksu(kerroin, 5, pelimuoto);
+            voitonmaksu(15, 5, pelimuoto);
 
             if ((Integer) parasKasi[0] > 5 || (kasiJokerienMaara >= parasKasiJokerienMaara && (Integer) parasKasi[0] == 5)) {
-                parasKasi[0] = 5;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(5);
             }
 
         } else if (testaaSuora(kasiArvot)) {
             System.out.println("Tulos: Suora!");
-            int kerroin = 10;
-            voitonmaksu(kerroin, 6, pelimuoto);
+            voitonmaksu(10, 6, pelimuoto);
 
             if ((Integer) parasKasi[0] > 6 || (kasi.get(4).getNumeroarvo() > paraskasiarvot.get(4) &&
                     kasiJokerienMaara >= parasKasiJokerienMaara && (Integer) parasKasi[0] == 6)) {
-                parasKasi[0] = 6;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(6);
             }
 
         } else if (testaaKolmoset(kasiArvot)) {
             System.out.println("Tulos: Kolmoset!");
-            int kerroin = 5;
-            voitonmaksu(kerroin, 7, pelimuoto);
+            voitonmaksu(5, 7, pelimuoto);
 
             if ((Integer) parasKasi[0] > 7 || (kasi.get(4).getNumeroarvo() > paraskasiarvot.get(4) &&
                     kasiJokerienMaara >= parasKasiJokerienMaara &&(Integer) parasKasi[0] == 7)) {
-                parasKasi[0] = 7;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(7);
             }
 
         } else if (testaaKaksiParia(kasiArvot)) {
             System.out.println("Tulos: Kaksi paria!");
-            int kerroin = 3;
-            voitonmaksu(kerroin, 8, pelimuoto);
+            voitonmaksu(3, 8, pelimuoto);
 
             if ((Integer) parasKasi[0] > 8) {
-                parasKasi[0] = 8;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(8);
             }
 
         } else if (testaaPari(kasiArvot)) {
             System.out.println("Tulos: 10-A pari!");
-            int kerroin = 2;
-            voitonmaksu(kerroin, 9, pelimuoto);
+            voitonmaksu(2, 9, pelimuoto);
 
             if ((Integer) parasKasi[0] > 9) {
-                parasKasi[0] = 9;
-                parasKasi[1] = kasi;
+                vaihdaParasKasi(9);
             }
 
         } else {
@@ -483,11 +476,12 @@ public class Pelaaja implements Serializable {
     }
 
 
-
-    public void voitonmaksu(int kerroin, int kadenArvo, String pelimuoto) throws ArithmeticException{
+    /** Metodi lisää voitot pelaajan saldoon ja päivittää pelaajan attribuutit viimeisinVoitto, yhteisvoitot,
+        viimeisinKadenArvo, voitetutJaot, suurinVoitto ja suurinSaldo. */
+    private void voitonmaksu(int kerroin, int kadenArvo, String pelimuoto) throws ArithmeticException{
 
         if (panos == 0) {
-            //Pyöristetään nollapanoksen voitot ylöspäin lähimpään kokonaislukuun
+            // Pyöristetään nollapanoksen voitot ylöspäin lähimpään kokonaislukuun
             viimeisinVoitto = (kerroin+1)/2 ;
             yhteisvoitot = yhteisvoitot + (kerroin+1)/2;
         } else {
@@ -521,35 +515,27 @@ public class Pelaaja implements Serializable {
     }
 
 
-    public boolean SamojaArvoja() {
-        ArrayList<Integer> kasiArvotIlmanJokereita = new ArrayList<>();
-        for (int j=0; j<5; j++) {
-            kasiArvotIlmanJokereita.add(kasi.get(j).getNumeroarvo());
-        }
-        int jokerienMaara = Collections.frequency(kasiArvotIlmanJokereita, 0);
-        for (int i=0; i<jokerienMaara; i++) {
-            kasiArvotIlmanJokereita.remove(Integer.valueOf(0));
-        }
-
-        Set<Integer> set = new HashSet<Integer>(kasiArvotIlmanJokereita);
-
-        if(set.size() < kasiArvotIlmanJokereita.size()){
-            return true;
-        }
-        return false;
+    /** Metodi vaihtaa parasKasi-attribuutissa tallessa olevan pelaajan parhaan käden uuteen parempaan käteen */
+    private void vaihdaParasKasi(int uusiParhaanKadenArvo) {
+        parasKasi[0] = uusiParhaanKadenArvo;
+        parasKasi[1] = kasi;
     }
 
 
-    public boolean testaaKuningasVarisuora(ArrayList<Integer> kasiArvot, ArrayList<Maa> kasiMaat) {
+
+    // Seuraavat metodit testaavat löytyykö pelaajan 5 kortista voittavaa pokerikättä. Mahdolliset pokerikäden
+    // arvot testataan järjestyksessä arvokkaimmasta kädestä arvottomimpaan.
+
+    private boolean testaaKuningasVarisuora(ArrayList<Integer> kasiArvot, ArrayList<Maa> kasiMaat) {
         if (testaaVari(kasiMaat) && testaaKuningasSuora(kasiArvot)) {
             return true;
         }
         return false;
     }
 
-    public boolean testaaViitoset(ArrayList<Integer> kasiArvot) {
+    private boolean testaaViitoset(ArrayList<Integer> kasiArvot) {
         int jokerienMaara = Collections.frequency(kasiArvot, 0);
-        //Jos jokerien ja jonkin tietyn arvoisen kortin esiintymien yhteismäärä on viisi, käsi on arvoltaan viitoset.
+        // Jos jokerien ja jonkin tietyn arvoisen kortin esiintymien yhteismäärä on viisi, käsi on arvoltaan viitoset.
         for (int i=2; i<15; i++) {
             if (jokerienMaara + Collections.frequency(kasiArvot, i) == 5) {
                 return true;
@@ -558,16 +544,16 @@ public class Pelaaja implements Serializable {
         return false;
     }
 
-    public boolean testaaVarisuora(ArrayList<Integer> kasiArvot, ArrayList<Maa> kasiMaat) {
+    private boolean testaaVarisuora(ArrayList<Integer> kasiArvot, ArrayList<Maa> kasiMaat) {
         if (testaaVari(kasiMaat) && testaaSuora(kasiArvot)) {
             return true;
         }
         return false;
     }
 
-    public boolean testaaNeloset(ArrayList<Integer> kasiArvot) {
+    private boolean testaaNeloset(ArrayList<Integer> kasiArvot) {
         int jokerienMaara = Collections.frequency(kasiArvot, 0);
-        //Jos jokerien ja jonkin tietyn arvoisen kortin esiintymien yhteismäärä on neljä, käsi on arvoltaan neloset.
+        // Jos jokerien ja jonkin tietyn arvoisen kortin esiintymien yhteismäärä on neljä, käsi on arvoltaan neloset.
         for (int i=1; i<15; i++) {
             if (jokerienMaara + Collections.frequency(kasiArvot, i) == 4) {
                 return true;
@@ -576,26 +562,26 @@ public class Pelaaja implements Serializable {
         return false;
     }
 
-    public boolean testaaTayskasi(ArrayList<Integer> kasiArvot) {
+    private boolean testaaTayskasi(ArrayList<Integer> kasiArvot) {
         if (!(kasiArvot.contains(0))) {
             if (testaaKolmoset(kasiArvot) && testaaPari2(kasiArvot)) {
                 return true;
             }
         } else {
-            //Tutkitaan tilanne, jossa jokeri on mukana kolmosissa.
+            // Tutkitaan tilanne, jossa jokeri on mukana kolmosissa.
             Collections.sort(kasiArvot);
             ArrayList<Integer> kasiArvotKopio = new ArrayList<>(kasiArvot);
             int i = 0;
             for (int arvo : kasiArvot) {
                 if ((Collections.frequency(kasiArvot, arvo) == 2) && kasiArvot.contains(0)) {
-                    //Poistetaan kolmosen muodostavat kortit, jotta jokeri ei enää ole mukana parin tarkistuksessa.
+                    // Poistetaan kolmosen muodostavat kortit, jotta jokeri ei enää ole mukana parin tarkistuksessa.
                     kasiArvotKopio.remove(i);
                     kasiArvotKopio.remove(i);
                     kasiArvotKopio.remove(0);
                     if (testaaPari2(kasiArvotKopio)) {
                         return true;
                     }
-                    //Jos kyseessä on pelkät kolmoset, eikä täyskäsi, lopetetaan for-loop.
+                    // Jos kyseessä on pelkät kolmoset, eikä täyskäsi, lopetetaan for-loop.
                     break;
                 }
                 i++;
@@ -604,31 +590,23 @@ public class Pelaaja implements Serializable {
         return false;
     }
 
-    public boolean testaaVari(ArrayList<Maa> kasiMaat) {
+    private boolean testaaVari(ArrayList<Maa> kasiMaat) {
         List<Maa> maalista = List.of(Maa.PATA, Maa.HERTTA, Maa.RISTI, Maa.RUUTU);
         int jokerienMaara = Collections.frequency(kasiMaat, Maa.JOKERI);
 
-        //Jos jokerien ja jonkin tietyn maan esiintymien yhteismäärä on viisi, käsi on arvoltaan väri.
+        // Jos jokerien ja jonkin tietyn maan esiintymien yhteismäärä on viisi, käsi on arvoltaan väri.
         for (Maa maa : maalista) {
             if (Collections.frequency(kasiMaat, maa) + jokerienMaara == 5) {
                 return true;
             }
-            /*
-            //Jos pakassa on mukana jokereita
-            for (int i=4; i>=0; i--) {
-                if ((Collections.frequency(kasiMaat, maa) == i) && (Collections.frequency(kasiMaat, Maa.JOKERI) == 5-i)) {
-                    return true;
-                }
-            }*/
-
         }
         return false;
     }
 
-    public boolean testaaKuningasSuora(ArrayList<Integer> kasiArvot) {
-        //Tehdään kasiArvot listasta kopio jotta vältytään sivuvaikutuksilta.
+    private boolean testaaKuningasSuora(ArrayList<Integer> kasiArvot) {
+        // Tehdään kasiArvot listasta kopio jotta vältytään sivuvaikutuksilta.
         ArrayList<Integer> kasiArvotKopio = new ArrayList<>(kasiArvot);
-        //Jos käsi on suora ja sen pienin arvo on 10, käsi on myös kuningassuora.
+        // Jos käsi on suora ja sen pienin arvo on 10, käsi on myös kuningassuora.
         if (testaaSuora(kasiArvotKopio)) {
             int jokerienMaara = Collections.frequency(kasiArvotKopio, 0);
             for (int i=0; i<jokerienMaara; i++) {
@@ -642,31 +620,31 @@ public class Pelaaja implements Serializable {
     }
 
 
-    public boolean testaaSuora(ArrayList<Integer> kasiArvot) {
-        //Järjestetään käden korttien numeroarvot. Jokerin arvo on 0, joten ne menevät listan alkuun.
+    private boolean testaaSuora(ArrayList<Integer> kasiArvot) {
+        // Järjestetään käden korttien numeroarvot. Jokerin arvo on 0, joten ne menevät listan alkuun.
         Collections.sort(kasiArvot);
         int perakkaiset = 0;
         for (int i=0; i<4; i++) {
             if (kasiArvot.get(i)+1 == kasiArvot.get(i+1)) {
                 perakkaiset++;
             }
-            //Otetaan myös jokerit huomioon. Jokeri muodostaa aina peräkkäisyyden.
+            // Otetaan myös jokerit huomioon. Jokeri muodostaa aina peräkkäisyyden.
               else if (kasiArvot.get(i) + kasiArvot.get(i+1) == kasiArvot.get(i)) {
                 perakkaiset++;
             } else if (kasiArvot.get(i) + kasiArvot.get(i+1) == kasiArvot.get(i+1)) {
                 perakkaiset++;
             }
         }
-        //Tilanteet joissa kaikki kortit ovat arvoiltaan peräkkäisessä järjestyksessä.
-        //Kattaa myös tilanteet joissa on 4 tai 5 jokeria.
+        // Tilanteet joissa kaikki kortit ovat arvoiltaan peräkkäisessä järjestyksessä.
+        // Kattaa myös tilanteet joissa on 4 tai 5 jokeria.
         if (perakkaiset == 4) {
             return true;
         }
 
-        //Tarkistetaan vielä kaikki tilanteet jossa jokereita on 1, 2 tai 3 kappaletta.
+        // Tarkistetaan vielä kaikki tilanteet jossa jokereita on 1, 2 tai 3 kappaletta.
         int jokerienMaara = Collections.frequency(kasiArvot, 0);
 
-        //Jos jokereita on yksi, normaaleista neljästä kortista suurimman ja pienimmän arvon
+        // Jos jokereita on yksi, normaaleista neljästä kortista suurimman ja pienimmän arvon
         // etäisyys toisistaan saa olla enintään 4, mutta vähintään 3. Duplikaattiarvoja ei myöskään saa olla.
         int suurinNormaalinKortinArvo = kasiArvot.get(4);
         int pieninNormaalinKortinArvo = kasiArvot.get(1);
@@ -675,7 +653,7 @@ public class Pelaaja implements Serializable {
             return true;
         }
 
-        //Jos jokereita on kaksi, normaaleista kolmesta kortista suurimman ja pienimmän arvon
+        // Jos jokereita on kaksi, normaaleista kolmesta kortista suurimman ja pienimmän arvon
         // etäisyys toisistaan saa olla enintään 4, mutta vähintään 2.
         suurinNormaalinKortinArvo = kasiArvot.get(4);
         pieninNormaalinKortinArvo = kasiArvot.get(2);
@@ -684,8 +662,8 @@ public class Pelaaja implements Serializable {
             return true;
         }
 
-        //Jos jokereita on kolme, kahden normaalin kortin arvojen etäisyys toisistaan saa olla enintään 4,
-        //mutta vähintään 1.
+        // Jos jokereita on kolme, kahden normaalin kortin arvojen etäisyys toisistaan saa olla enintään 4,
+        // mutta vähintään 1.
         int suuremmanNormaalinKortinArvo = kasiArvot.get(4);
         int pienemmanNormaalinKortinArvo = kasiArvot.get(3);
         arvojenEtaisyys = suuremmanNormaalinKortinArvo-pienemmanNormaalinKortinArvo;
@@ -693,7 +671,7 @@ public class Pelaaja implements Serializable {
             return true;
         }
 
-        //Tilanteet, joissa ässä on suoran pienin kortti, täytyy tutkia erikseen.
+        // Tilanteet, joissa ässä on suoran pienin kortti, täytyy tutkia erikseen.
         if (perakkaiset >= 2 && kasiArvot.contains(14) && kasiArvot.get(3) < 6) {
             return true;
         }
@@ -701,9 +679,9 @@ public class Pelaaja implements Serializable {
     }
 
 
-    public boolean testaaKolmoset(ArrayList<Integer> kasiArvot) {
+    private boolean testaaKolmoset(ArrayList<Integer> kasiArvot) {
         int jokerienMaara = Collections.frequency(kasiArvot, 0);
-        //Jos jokerien ja jonkin tietyn arvoisen kortin esiintymien yhteismäärä on kolme, käsi on arvoltaan kolmoset.
+        // Jos jokerien ja jonkin tietyn arvoisen kortin esiintymien yhteismäärä on kolme, käsi on arvoltaan kolmoset.
         for (int i=1; i<15; i++) {
             if (jokerienMaara + Collections.frequency(kasiArvot, i) == 3) {
                 return true;
@@ -712,7 +690,7 @@ public class Pelaaja implements Serializable {
         return false;
     }
 
-    public boolean testaaKaksiParia(ArrayList<Integer> kasiArvot) {
+    private boolean testaaKaksiParia(ArrayList<Integer> kasiArvot) {
         int parit = 0;
         for (int i=2; i<15; i++) {
             if (Collections.frequency(kasiArvot, i) == 2) {
@@ -722,16 +700,17 @@ public class Pelaaja implements Serializable {
         if (parit == 2) {
             return true;
         }
-        //Jokeria ei tarvitse erikseen testata, sillä kolmoset ovat aina parempi kuin kaksi paria.
+        // Jokeria ei tarvitse erikseen testata, sillä kolmoset ovat aina parempi kuin kaksi paria.
         return false;
     }
 
-    public boolean testaaPari(ArrayList<Integer> kasiArvot) {
+    private boolean testaaPari(ArrayList<Integer> kasiArvot) {
+        // Metodi hyväksyy pariksi vain 10-A arvoisten korttien muodostamat parit
         for (int i=10; i<15; i++) {
             if (Collections.frequency(kasiArvot, i) == 2) {
                 return true;
             }
-            //Toteutuu aina kun kädessä on jokeri ja jokin kortti väliltä 10-14.
+            // Toteutuu aina kun kädessä on jokeri ja jokin kortti väliltä 10-14.
             if (kasiArvot.contains(i) && kasiArvot.contains(0)) {
                 return true;
             }
@@ -739,12 +718,13 @@ public class Pelaaja implements Serializable {
         return false;
     }
 
-    public boolean testaaPari2(ArrayList<Integer> kasiArvot) {
+    private boolean testaaPari2(ArrayList<Integer> kasiArvot) {
+        // Metodi hyväksyy pariksi minkä tahansa parin.
         for (int i=2; i<15; i++) {
             if (Collections.frequency(kasiArvot, i) == 2) {
                 return true;
             }
-            //Jokeri muodostaa aina parin.
+            // Jokeri muodostaa aina parin.
             if (kasiArvot.contains(0)) {
                 return true;
             }
@@ -753,11 +733,34 @@ public class Pelaaja implements Serializable {
     }
 
 
+    /** Metodi palauttaa tiedon siitä,  */
+    private boolean SamojaArvoja() {
+        ArrayList<Integer> kasiArvotIlmanJokereita = new ArrayList<>();
+        for (int j=0; j<5; j++) {
+            kasiArvotIlmanJokereita.add(kasi.get(j).getNumeroarvo());
+        }
+        int jokerienMaara = Collections.frequency(kasiArvotIlmanJokereita, 0);
+        for (int i=0; i<jokerienMaara; i++) {
+            kasiArvotIlmanJokereita.remove(Integer.valueOf(0));
+        }
+
+        // HashSet poistaa listasta duplikaatit.
+        Set<Integer> set = new HashSet<Integer>(kasiArvotIlmanJokereita);
+
+        // Jos listassa oli duplikaatteja, setin pituus on pienempi kuin alkuperäisen listan pituus.
+        if(set.size() < kasiArvotIlmanJokereita.size()){
+            return true;
+        }
+        return false;
+    }
 
 
-    // Käden tarkistuksen testaamiseen käytetty metodi.
+
+
+    // Käden tarkistuksen toiminnan testaamisessa käytetty metodi.
+    // Ei toimi tällä hetkellä!
     /*
-    public void kadenTarkistusTest(String pelimuoto) {
+    void kadenTarkistusTest(String pelimuoto) {
         ArrayList<Maa> kasiMaat = new ArrayList<>();
         ArrayList<Integer> kasiArvot = new ArrayList<>();
 

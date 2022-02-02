@@ -1,13 +1,6 @@
 package JavaPokeri;
 
-public class Kilpapelitulos implements Comparable<Kilpapelitulos>{
-    public final String nimi;
-    public final Integer pisteet;
-
-    public Kilpapelitulos(String nimi, Integer pisteet) {
-        this.nimi = nimi;
-        this.pisteet = pisteet;
-    }
+record Kilpapelitulos(String nimi, Integer pisteet) implements Comparable<Kilpapelitulos> {
 
     public String getNimi() {
         return nimi;

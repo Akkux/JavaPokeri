@@ -5,18 +5,19 @@ import java.util.List;
 import java.util.Random;
 
 class Korttipakka {
-    private ArrayList<Kortti> pakka;
+    private final ArrayList<Kortti> pakka;
 
     public Korttipakka(int jokerienMaara) {
         pakka = luoPakka(jokerienMaara);
-
     }
 
-    public void lisaaKortti(ArrayList<Kortti> pakka, Maa maa, Arvo arvo) {
+    private void lisaaKortti(ArrayList<Kortti> pakka, Maa maa, Arvo arvo) {
         pakka.add(new Kortti(maa, arvo));
     }
 
-    public ArrayList<Kortti> luoPakka(int jokerienMaara) {
+    /** Metodi luo ja palauttaa korttipakan, jossa on kaikki tavanomaiset 52 korttia
+        ja valittu määrä jokereita. */
+    private ArrayList<Kortti> luoPakka(int jokerienMaara) {
         ArrayList<Kortti> pakka = new ArrayList<>();
         ArrayList<Maa> maalista = new ArrayList<>(List.of(Maa.PATA, Maa.HERTTA, Maa.RISTI, Maa.RUUTU));
         ArrayList<Arvo> arvolista = new ArrayList<>(List.of(Arvo.ÄSSÄ, Arvo.KAKSI, Arvo.KOLME,
@@ -34,7 +35,9 @@ class Korttipakka {
         return pakka;
     }
 
-    public ArrayList<Kortti> arvo5korttia() {
+    /** Metodi arpoo korttipakasta 5 korttia ja palauttaa niistä muodostuvan käden.
+        Metodi myös poistaa arvotut kortit pakasta.*/
+    ArrayList<Kortti> arvo5korttia() {
         ArrayList<Kortti> kasi = new ArrayList<>();
         Random r = new Random();
         for(int i=0; i<5; i++) {
@@ -45,7 +48,9 @@ class Korttipakka {
         return kasi;
     }
 
-    public Kortti nostaUusiKortti() {
+    /** Metodi arpoo ja palauttaa pakasta yhden kortin
+        ja samalla poistaa sen pakasta. */
+    Kortti nostaUusiKortti() {
         Random r = new Random();
         int arvottu = r.nextInt(pakka.size());
         return poistaKortti(arvottu);
@@ -56,11 +61,11 @@ class Korttipakka {
         return "Korttipakka:\n" + pakka;
     }
 
-    public Kortti getKortti(int i) {
+    Kortti getKortti(int i) {
         return pakka.get(i);
     }
 
-    public Kortti poistaKortti(int i) {
+    Kortti poistaKortti(int i) {
         return pakka.remove(i);
     }
 

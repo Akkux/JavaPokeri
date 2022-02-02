@@ -1,7 +1,7 @@
 package JavaPokeri;
 
 
-public class VetopokeriParannusKauppa {
+class VetopokeriParannusKauppa {
 
     private  Pelaaja pelaaja = null;
     private String[] parannustenTilat;
@@ -11,7 +11,7 @@ public class VetopokeriParannusKauppa {
     private int parannuksenIndeksi;
 
 
-    public VetopokeriParannusKauppa(Pelaaja pelaaja) {
+    VetopokeriParannusKauppa(Pelaaja pelaaja) {
         this.pelaaja = pelaaja;
         vetopokeriParannustenTilat = pelaaja.getVetopokeriParannustenTilat();
 
@@ -30,7 +30,8 @@ public class VetopokeriParannusKauppa {
 
 
     /** Metodi tulostaa vetopokerin parannuskaupan valikon. */
-    public void tulostaVetopokeriParannukset() {
+    void tulostaVetopokeriParannukset() {
+        String[] jasenet = new Parannukset().getJasenet();
         System.out.println();
         System.out.println();
         System.out.println(
@@ -38,18 +39,17 @@ public class VetopokeriParannusKauppa {
                         "Saldo: " + pelaaja.getSaldo() + " kolikkoa\n");
         System.out.println("Ostettavat parannukset:");
 
-        for (int i=1; i<10; i++) {
-            System.out.println("('" + i + "')  Lisää pakkaan " + i + ". JOKERI     " + parannustenTilat[i-1]);
+        for (int i=0; i<9; i++) {
+            System.out.println("('" + (i+1) + "')  " + jasenet[i] + "     " + parannustenTilat[i]);
         }
-
-        System.out.println("('10') Lisää pakkaan 10. JOKERI    " + parannustenTilat[9] + "\n" +
-                "('T')  Takaisin");
+        System.out.println("('10') " + jasenet[9] + "     " + parannustenTilat[9]);
+        System.out.println("('T')  Takaisin");
         System.out.print("Valitse ostettava parannus: ");
     }
 
 
     /** Metodi tarkistaa onko käyttäjän valitseman parannuksen ostaminen mahdollista. */
-    public boolean ostoMahdollista(String input) throws CustomException {
+    boolean ostoMahdollista(String input) throws CustomException {
 
         for (int i=0; i<10; i++) {
             if (input.equals(String.valueOf(i+1))) {
@@ -72,7 +72,7 @@ public class VetopokeriParannusKauppa {
 
     /** Metodi suorittaa parannuksen ostotapahtuman ja päivittää pelaajan vetopokerin parannuksia koskevat
         attribuutit. */
-    public void parannuksenOsto() throws CustomException {
+    void parannuksenOsto() throws CustomException {
 
         System.out.println("Haluatko ostaa parannuksen " + hinta + " kolikolla? ('K') Kyllä, ('E') Ei");
         System.out.print("Valitse syöttämällä kirjain: ");

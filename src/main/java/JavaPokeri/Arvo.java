@@ -7,8 +7,8 @@ public enum Arvo {
     KUNINGATAR("Q", 12), KUNINGAS("K", 13),
     JOKERI("*", 0);
 
-    public final String symboli;
-    public final int numeroarvo;
+    final String symboli;
+    final int numeroarvo;
 
     Arvo(String symboli, int arvo) {
         this.symboli = symboli;

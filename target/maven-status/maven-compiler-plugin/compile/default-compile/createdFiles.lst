@@ -1,5 +1,6 @@
 JavaPokeri\Ohjeet.class
 JavaPokeri\AvattavatAsiat.class
+JavaPokeri\VetopokeriParannusKauppa.class
 JavaPokeri\Kortti.class
 JavaPokeri\Maa.class
 JavaPokeri\Kilpapelitulos.class
@@ -8,7 +9,6 @@ Main.class
 JavaPokeri\Kayttoliittyma.class
 JavaPokeri\Parannukset.class
 JavaPokeri\Arvo.class
-JavaPokeri\Flag.class
 JavaPokeri\Korttipakka.class
 JavaPokeri\Pelaaja.class
 JavaPokeri\Saavutukset.class

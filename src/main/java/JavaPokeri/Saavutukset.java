@@ -1,10 +1,10 @@
 package JavaPokeri;
 
-public class Saavutukset implements AvattavatAsiat {
+class Saavutukset implements AvattavatAsiat {
     private final String[] jasenet;
     private final String[] kuvaukset;
 
-    public Saavutukset() {
+    Saavutukset() {
         jasenet = alustaJasenet();
         kuvaukset = alustaKuvaukset();
     }
@@ -14,10 +14,11 @@ public class Saavutukset implements AvattavatAsiat {
         return jasenet;
     }
 
-    public String[] getKuvaukset() {
+    String[] getKuvaukset() {
         return kuvaukset;
     }
 
+    @Override
     public String[] alustaJasenet() {
         String[] jasenet = {
                 "Nahka-Lassen kaataja",
@@ -59,7 +60,7 @@ public class Saavutukset implements AvattavatAsiat {
         return jasenet;
     }
 
-    public String[] alustaKuvaukset() {
+    private String[] alustaKuvaukset() {
         String[] kuvaukset = {
                 "Päihitä Nahka-Lasse vetopokerin kilpapelissä",
                 "Päihitä NPC-Janne vetopokerin kilpapelissä",

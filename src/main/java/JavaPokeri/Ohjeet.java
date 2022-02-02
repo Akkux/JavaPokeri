@@ -1,12 +1,10 @@
 package JavaPokeri;
 
-public class Ohjeet {
+class Ohjeet {
 
-    public Ohjeet() {}
+    Ohjeet() {}
 
-
-    /**  */
-    public void tulostaOhjeet() {
+    void tulostaOhjeet() {
         System.out.println();
         System.out.println();
         System.out.println("""
