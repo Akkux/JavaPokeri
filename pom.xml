@@ -16,7 +16,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <finalName>JavaPokeri-1.8.1</finalName>
+                    <finalName>JavaPokeri-1.9</finalName>
                     <archive>
                         <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
