@@ -168,9 +168,9 @@ class Pelaaja implements Serializable {
     void tulostaKasi(boolean korttienVaihtoTapahtunut) {
         System.out.println();
         if (korttienVaihtoTapahtunut) {
-            System.out.println("Käsi:");
-        } else {
             System.out.println("Uusi Käsi:");
+        } else {
+            System.out.println("Käsi:");
         }
         System.out.println("(1)   " + kasi.get(0));
         System.out.println("(2)   " + kasi.get(1));

@@ -8,6 +8,12 @@ import java.util.Scanner;
 
 public class Kayttoliittyma {
 
+    private static Pelaaja pelaaja;
+
+    public static void setPelaaja(Pelaaja pelaaja) {
+        Kayttoliittyma.pelaaja = pelaaja;
+    }
+
     /** Metodi tulostaa komentoriville pelin nimen suurella tyylitellyllä fontilla kun alkuvalikko avataan. */
     private static void tulostaBanner() {
         System.out.println("""    
@@ -93,9 +99,9 @@ public class Kayttoliittyma {
         } else {
             System.out.println();
             System.out.println("Tervetuloa " + kayttajanimi + "!");
-            Pelaaja uusiPelaaja = new Pelaaja(kayttajanimi);
-            tallennus(uusiPelaaja);
-            kotivalikko(new Pelaaja(kayttajanimi), true);
+            setPelaaja(new Pelaaja(kayttajanimi));
+            tallennus();
+            kotivalikko(true);
         }
     }
 
@@ -104,9 +110,9 @@ public class Kayttoliittyma {
     private static Pelaaja joTallennettuPelaaja(String kayttajanimi) {
         ArrayList<Pelaaja> pelaajalista = haePelaajatiedot();
 
-        for (Pelaaja pelaaja : pelaajalista) {
-            if (pelaaja.getNimi().equals(kayttajanimi)) {
-                return pelaaja;
+        for (Pelaaja tallennettuPelaaja : pelaajalista) {
+            if (tallennettuPelaaja.getNimi().equals(kayttajanimi)) {
+                return tallennettuPelaaja;
             }
         }
         return null;
@@ -115,16 +121,17 @@ public class Kayttoliittyma {
 
     /** Metodi tarjoaa käyttäjälle mahdollisuuden latadata peli, jos selviää, että kyseinen käyttäjänimi
         onkin jo tallennettu järjestelmään. */
-    private static void lataaNimi(String kayttajanimi, Pelaaja pelaaja) throws CustomException{
+    private static void lataaNimi(String kayttajanimi, Pelaaja joTallennettuPelaaja) throws CustomException{
         System.out.println("Kyseinen käyttäjänimi on jo käytössä.");
         System.out.println("Haluatko ladata käyttäjän " + kayttajanimi + " pelin? ('K') Kyllä,  ('E') Ei");
         System.out.print("Valitse syöttämällä kirjain: ");
         String input = tekstiSyote();
 
         if (input.equals("K")) {
+            setPelaaja(joTallennettuPelaaja);
             System.out.println();
             System.out.println("Tervetuloa takaisin " + pelaaja.getNimi() + "!");
-            kotivalikko(pelaaja, true);
+            kotivalikko(true);
 
         } else if (input.equals("E")) {
             throw new CustomException("Valitse jokin muu käyttäjänimi.");
@@ -136,17 +143,17 @@ public class Kayttoliittyma {
 
     /** Medodi luo uuden pelaajan valitulla käyttäjänimellä ja tervehtii uutta pelaajaa.  */
     private static void uusiNimi(String kayttajanimi) {
-        Pelaaja uusiPelaaja = new Pelaaja(kayttajanimi);
+        setPelaaja(new Pelaaja(kayttajanimi));
         System.out.println();
         System.out.println("Tervetuloa " + kayttajanimi + "!");
-        tallennus(uusiPelaaja);
-        kotivalikko(uusiPelaaja, true);
+        tallennus();
+        kotivalikko(true);
     }
 
 
     /** Tallennetaan pelaajan tiedot tallennustiedostoon 'pelaajatioedot.ser', jotta pelaaja voi jatkaa siitä
      mihin jäi. */
-    private static void tallennus(Pelaaja tallennettavaPelaaja) {
+    private static void tallennus() {
         ArrayList<Pelaaja> pelaajatiedot = haePelaajatiedot();
         ArrayList<Pelaaja> pelaajatiedotKopio = haePelaajatiedot();
 
@@ -155,18 +162,18 @@ public class Kayttoliittyma {
         if (pelaajatiedotKopio.size() > 0) {
             for (Pelaaja tallennettuPelaaja : pelaajatiedotKopio) {
                 // Päivitetään pelaajan tiedot jos listasta löytyy sama nimi.
-                if (tallennettuPelaaja.getNimi().equals(tallennettavaPelaaja.getNimi())) {
-                    pelaajatiedot.set(pelaajatiedotKopio.indexOf(tallennettuPelaaja), tallennettavaPelaaja);
+                if (tallennettuPelaaja.getNimi().equals(pelaaja.getNimi())) {
+                    pelaajatiedot.set(pelaajatiedotKopio.indexOf(tallennettuPelaaja), pelaaja);
                     break;
                 }
                 // Jos pelaajalistasta ei löydy samaa nimeä, lisätään listaan uusi pelaaja.
                 if (pelaajatiedotKopio.indexOf(tallennettuPelaaja) == pelaajatiedotKopio.size() - 1) {
-                    pelaajatiedot.add(tallennettavaPelaaja);
+                    pelaajatiedot.add(pelaaja);
                 }
             }
             // Jos lista on tyhjä, lisätään siihen ensimmäinen pelaaja.
         } else {
-            pelaajatiedot.add(tallennettavaPelaaja);
+            pelaajatiedot.add(pelaaja);
         }
 
         // Kirjoitetaan muutokset tallennustiedostoon
@@ -203,7 +210,8 @@ public class Kayttoliittyma {
     }
 
 
-    /**  */
+    /** Metodi tulostaa kaikki tallennetut pelaajat näkyviin ja lataa käyttäjän
+        valitseman pelaajan pelin */
     private static void lataaVanhaKayttaja(ArrayList<Pelaaja> pelaajalista) throws CustomException {
 
         if (pelaajalista.size() > 0) {
@@ -215,10 +223,10 @@ public class Kayttoliittyma {
                 throw new CustomException("Kelvoton syöte!");
             }
 
-            Pelaaja valittuPelaaja = pelaajalista.get(input - 1);
+            setPelaaja(pelaajalista.get(input - 1));
             System.out.println();
-            System.out.println("Tervetuloa takaisin " + valittuPelaaja.getNimi() + "!");
-            kotivalikko(valittuPelaaja, true);
+            System.out.println("Tervetuloa takaisin " + pelaaja.getNimi() + "!");
+            kotivalikko(true);
 
         } else {
             throw new CustomException("Ei yhtäkään tallennettua käyttäjää.");
@@ -278,29 +286,29 @@ public class Kayttoliittyma {
 
     /** Metodi käsittelee pelaajan syötteen pelin kotivalikossa ja suorittaa valitun
      toimenpiteen */
-    private static void kotivalikko(Pelaaja pelaaja, boolean pelaajaaTervehditaan) {
+    private static void kotivalikko(boolean pelaajaaTervehditaan) {
 
         boolean uudestaan = true;
         while (uudestaan) {
-            tulostaKotivalikko(pelaaja, pelaajaaTervehditaan);
+            tulostaKotivalikko(pelaajaaTervehditaan);
             String input = tekstiSyote();
 
             try {
                 switch (input) {
                     case "P" -> {
-                        pelimuodotValikko(pelaaja);
+                        pelimuodotValikko();
                         uudestaan = false;
                     }
                     case "S" -> {
-                        tulostaSaavutukset(pelaaja);
-                        tulostaTilastot(pelaaja);
+                        tulostaSaavutukset();
+                        tulostaTilastot();
                     }
                     case "O" -> new Ohjeet().tulostaOhjeet();
                     case "T" -> {
                         alkuvalikko();
                         uudestaan = false;
                     }
-                    case "192837465" -> talletusHuijaus(pelaaja);
+                    case "192837465" -> talletusHuijaus();
 
                     default -> throw new CustomException("Kelvoton syöte!");
                 }
@@ -312,7 +320,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi tulostaa pelaajan kotivalikon. */
-    private static void tulostaKotivalikko(Pelaaja pelaaja, boolean pelaajaaTervehditaan) {
+    private static void tulostaKotivalikko(boolean pelaajaaTervehditaan) {
         System.out.println();
         // jos pelaaja tulee kotivalikkoon alkuvalikosta, häntä tervehditään.
         if (!pelaajaaTervehditaan) {
@@ -330,7 +338,7 @@ public class Kayttoliittyma {
 
     /** Metodi käsittelee pelaajan syötteen pelimuotovalikossa ja suorittaa valitun
      toimenpiteen. */
-    private static void pelimuodotValikko(Pelaaja pelaaja) {
+    private static void pelimuodotValikko() {
 
         boolean uudestaan = true;
         while (uudestaan) {
@@ -340,16 +348,16 @@ public class Kayttoliittyma {
             try {
                 switch (input) {
                     case "V" -> {
-                        vetopokeriValikko(pelaaja);
+                        vetopokeriValikko();
                         uudestaan = false;
                     }
                     case "?" -> throw new CustomException("Tämä pelimuoto on vielä työn alla :)");
                     case "O" -> new Ohjeet().tulostaOhjeet();
                     case "T" -> {
-                        kotivalikko(pelaaja, false);
+                        kotivalikko(false);
                         uudestaan = false;
                     }
-                    case "192837465" -> talletusHuijaus(pelaaja);
+                    case "192837465" -> talletusHuijaus();
                     default -> throw new CustomException("Kelvoton syöte!");
                 }
             } catch (CustomException e) {
@@ -374,7 +382,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi tulostaa näkyviin pelaajan avaamat saavutukset. */
-    private static void tulostaSaavutukset(Pelaaja pelaaja) {
+    private static void tulostaSaavutukset() {
         System.out.println();
         String[] saavutukset = new Saavutukset().getJasenet();
         Boolean[] saavutustenTilat = pelaaja.getSaavutustenTilat();
@@ -398,7 +406,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi tulostaa pelaajan pelihistoriaa koskevat tilastot.*/
-    private static void tulostaTilastot(Pelaaja pelaaja) {
+    private static void tulostaTilastot() {
         System.out.println();
         System.out.println("--- TILASTOT ---");
         System.out.println("Suurin yksittäinen voitto: " + pelaaja.getSuurinVoitto() + " kolikkoa");
@@ -428,7 +436,7 @@ public class Kayttoliittyma {
 
     /** Metodi käsittelee pelaajan syötteen vetopokerin valikossa ja suorittaa valitun
      toimenpiteen */
-    private static void vetopokeriValikko(Pelaaja pelaaja) {
+    private static void vetopokeriValikko() {
 
         boolean uudestaan = true;
         while (uudestaan) {
@@ -438,20 +446,20 @@ public class Kayttoliittyma {
             try {
                 switch (input) {
                     case "V" -> {
-                        vetopokeriVapaapeli(pelaaja);
+                        vetopokeriVapaapeli();
                         uudestaan = false;
                     }
                     case "K" -> {
-                        vetopokeriKilpapeli(pelaaja);
+                        vetopokeriKilpapeli();
                         uudestaan = false;
                     }
                     case "P" -> {
-                        vetopokeriParannukset(pelaaja);
+                        vetopokeriParannukset();
                         uudestaan = false;
                     }
                     case "O" -> new Ohjeet().tulostaOhjeet();
                     case "T" -> {
-                        pelimuodotValikko(pelaaja);
+                        pelimuodotValikko();
                         uudestaan = false;
                     }
                     default -> throw new CustomException("Kelvoton syöte!");
@@ -480,20 +488,20 @@ public class Kayttoliittyma {
 
     /** Metodi käsittelee pelaajan syötteen vetopokerin vapaapelin valikossa ja suorittaa valitun
      toimenpiteen. */
-    private static void vetopokeriVapaapeli(Pelaaja pelaaja) {
+    private static void vetopokeriVapaapeli() {
 
         boolean uudestaan = true;
         while (uudestaan) {
-            tallennus(pelaaja);
-            tulostaVetopokeriVapaapeliValikko(pelaaja);
+            tallennus();
+            tulostaVetopokeriVapaapeliValikko();
             String input = tekstiSyote();
 
             try {
                 if (input.equals("P")) {
-                    uusiVetopokeriVapaapeli(pelaaja);
+                    uusiVetopokeriVapaapeli();
 
                 } else if (input.equals("T")) {
-                    vetopokeriValikko(pelaaja);
+                    vetopokeriValikko();
                     uudestaan = false;
 
                 } else {
@@ -515,7 +523,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi tulostaa vetopokerin vapaapelin valikon. */
-    private static void tulostaVetopokeriVapaapeliValikko(Pelaaja pelaaja) {
+    private static void tulostaVetopokeriVapaapeliValikko() {
         System.out.println();
         System.out.println(
                 "--- VETOPOKERI: Vapaapeli ---\n" +
@@ -527,7 +535,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi aloittaa uuden vetopokerin vapaapelikierroksen. */
-    private static void uusiVetopokeriVapaapeli(Pelaaja pelaaja) throws ArithmeticException {
+    private static void uusiVetopokeriVapaapeli() throws ArithmeticException {
 
         String pelimuoto = "vapaapeli";
         int minimipanos = 0;
@@ -540,17 +548,17 @@ public class Kayttoliittyma {
             try {
 
                 if (pelaaja.getSaldo() == 0) {
-                    vapaapeliJaaJaTarkistaNollapanos(pelaaja, pakka, pelimuoto);
+                    vapaapeliJaaJaTarkistaNollapanos(pakka, pelimuoto);
                     uudestaan = false;
                     break;
                 }
 
-                int panos = vetopokeriAsetaPanos(pelaaja, pelimuoto, pelaaja.getSaldo(), minimipanos, maksimipanos);
+                int panos = vetopokeriAsetaPanos(pelimuoto, pelaaja.getSaldo(), minimipanos, maksimipanos);
 
                 if (panos == 0) {
-                    vapaapeliJaaJaTarkistaNollapanos(pelaaja, pakka, pelimuoto);
+                    vapaapeliJaaJaTarkistaNollapanos(pakka, pelimuoto);
                 } else {
-                    vapaapeliJaaJaTarkista(pelaaja, pakka);
+                    vapaapeliJaaJaTarkista(pakka);
                 }
                 uudestaan = false;
 
@@ -564,13 +572,13 @@ public class Kayttoliittyma {
 
     /** Metodi suorittaa yhteen vetopokerin vapaapelin kierrokseen kuuluvat toimenpiteet kun
         kierrokselle asetettu alkupanos on 0 kolikkoa. */
-    private static void vapaapeliJaaJaTarkistaNollapanos(Pelaaja pelaaja, Korttipakka pakka, String pelimuoto)
+    private static void vapaapeliJaaJaTarkistaNollapanos(Korttipakka pakka, String pelimuoto)
             throws CustomException, ArithmeticException{
 
         pelaaja.setPanos(0);
         pelaaja.jaaUusiKasi(pakka.arvo5korttia());
         pelaaja.tulostaKasi(false);
-        korttienVaihto(pelaaja, pakka, pelimuoto);
+        korttienVaihto(pakka, pelimuoto);
         pelaaja.kadenTarkistus(pelimuoto);
         System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo() + " kolikkoa");
         System.out.println("----------------------------------");
@@ -579,7 +587,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi tarkistaa vetopokerissa pelaajan asettaman alkupanoksen kelvollisuuden. */
-    private static int vetopokeriAsetaPanos(Pelaaja pelaaja, String pelimuoto, int saldo, int min, int max) throws CustomException {
+    private static int vetopokeriAsetaPanos(String pelimuoto, int saldo, int min, int max) throws CustomException {
 
         System.out.print("Aseta alkupanos: ");
         String input = tekstiSyote();
@@ -626,11 +634,11 @@ public class Kayttoliittyma {
 
     /** Metodi suorittaa yhteen vetopokerin vapaapelin kierrokseen kuuluvat toimenpiteet kun
      kierrokselle asetettu alkupanos on suurempi kuin 0 kolikkoa. */
-    private static void vapaapeliJaaJaTarkista(Pelaaja pelaaja, Korttipakka pakka) {
+    private static void vapaapeliJaaJaTarkista(Korttipakka pakka) {
         String pelimuoto = "vapaapeli";
         pelaaja.jaaUusiKasi(pakka.arvo5korttia());
         pelaaja.tulostaKasi(false);
-        korttienVaihto(pelaaja, pakka, pelimuoto);
+        korttienVaihto(pakka, pelimuoto);
         pelaaja.kadenTarkistus(pelimuoto);
         pelaaja.tarkistaSaavutukset();
         System.out.println("Pelaajan " + pelaaja.getNimi() + " saldo: " + pelaaja.getSaldo() + " kolikkoa");
@@ -640,7 +648,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi suorittaa pelaajalle jaetun käden korttien vaihtamisen. */
-    private static void korttienVaihto(Pelaaja pelaaja, Korttipakka pakka, String pelimuoto) {
+    private static void korttienVaihto(Korttipakka pakka, String pelimuoto) {
 
         boolean uudestaan = true;
         while (uudestaan) {
@@ -655,20 +663,20 @@ public class Kayttoliittyma {
                     pelaaja.vaihdaKortteja(vaihdettavat, pakka);
 
                     if (pelaaja.getSaldo() > 0 && pelimuoto.equals("vapaapeli")) {
-                        asetaVetopokeriLisapanos(pelaaja, pelimuoto);
+                        asetaVetopokeriLisapanos(pelimuoto);
                     }
                     if (pelaaja.getKilpapelinSaldo() > 0 && pelimuoto.equals("kilpapeli")) {
-                        asetaVetopokeriLisapanos(pelaaja, pelimuoto);
+                        asetaVetopokeriLisapanos(pelimuoto);
                     }
                     pelaaja.tulostaKasi(true);
                     uudestaan = false;
 
                 } else if (input.equals("P")) {
                     if (pelaaja.getSaldo() > 0 && pelimuoto.equals("vapaapeli")) {
-                        asetaVetopokeriLisapanos(pelaaja, pelimuoto);
+                        asetaVetopokeriLisapanos(pelimuoto);
                     }
                     if (pelaaja.getKilpapelinSaldo() > 0 && pelimuoto.equals("kilpapeli")) {
-                        asetaVetopokeriLisapanos(pelaaja, pelimuoto);
+                        asetaVetopokeriLisapanos(pelimuoto);
                     }
                     uudestaan = false;
 
@@ -686,7 +694,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi suorittaa toiminnon, jossa pelaaja voi halutessaan korottaa alkuperäistä panostaan. */
-    private static void asetaVetopokeriLisapanos(Pelaaja pelaaja, String pelimuoto) {
+    private static void asetaVetopokeriLisapanos(String pelimuoto) {
 
         boolean uudestaan = true;
         while (uudestaan) {
@@ -713,7 +721,7 @@ public class Kayttoliittyma {
                     System.out.print("Lisäpanoksen suuruus: ");
                     input = tekstiSyote();
 
-                    tarkistaVetopokeriLisapanos(pelaaja, input, maksimikorotus, pelimuoto);
+                    tarkistaVetopokeriLisapanos(input, maksimikorotus, pelimuoto);
                     uudestaan = false;
 
                 } else if (input.equals("E")) {
@@ -732,7 +740,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi tarkistaa pelaajan asettaman lisäpanoksen suuruuden kelvollisuuden. */
-    private static void tarkistaVetopokeriLisapanos(Pelaaja pelaaja, String input, int maksimikorotus, String pelimuoto)
+    private static void tarkistaVetopokeriLisapanos(String input, int maksimikorotus, String pelimuoto)
             throws CustomException {
 
         int lisapanos = -1;
@@ -771,29 +779,29 @@ public class Kayttoliittyma {
 
     /** Metodi käsittelee pelaajan syötteen vetopokerin kilpapelin valikossa ja suorittaa valitun
      toimenpiteen */
-    private static void vetopokeriKilpapeli(Pelaaja pelaaja) {
+    private static void vetopokeriKilpapeli() {
         int kilpapelinHinta = 100;
 
         boolean uudestaan = true;
         while (uudestaan) {
-            tallennus(pelaaja);
-            tulostaVetopokeriKilpapeliValikko(pelaaja);
+            tallennus();
+            tulostaVetopokeriKilpapeliValikko();
             String input = tekstiSyote();
 
             try {
                 switch (input) {
                     case "P" -> {
-                        maksaUusiVetopokeriKilpapeli(pelaaja, kilpapelinHinta);
+                        maksaUusiVetopokeriKilpapeli(kilpapelinHinta);
                         uudestaan = false;
                     }
-                    case "O" -> tulostaVetopokeriKilpapelinTulostaulu(pelaaja);
+                    case "O" -> tulostaVetopokeriKilpapelinTulostaulu();
 
                     case "H" -> {
                         ArrayList<Kilpapelitulos> halloffame = muodostaHallOfFame();
                         tulostaHallOfFame(halloffame);
                     }
                     case "T" -> {
-                        vetopokeriValikko(pelaaja);
+                        vetopokeriValikko();
                         uudestaan = false;
                     }
 
@@ -807,7 +815,7 @@ public class Kayttoliittyma {
     }
 
     /** Metodi tulostaa vetopokerin kilpapelin valikon. */
-    private static void tulostaVetopokeriKilpapeliValikko(Pelaaja pelaaja) {
+    private static void tulostaVetopokeriKilpapeliValikko() {
         System.out.println();
         System.out.println(
                 "--- VETOPOKERI: Kilpapeli ---" + "\n" +
@@ -822,7 +830,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi suorittaa uuden kilpapelin aloittamista edeltävän maksuoperaation. */
-    private static void maksaUusiVetopokeriKilpapeli(Pelaaja pelaaja, int kilpapelinHinta) throws CustomException {
+    private static void maksaUusiVetopokeriKilpapeli(int kilpapelinHinta) throws CustomException {
         if (pelaaja.getSaldo() >= kilpapelinHinta) {
             System.out.println("\nUuden kilpapelin aloittaminen maksaa 100 kolikkoa. \n" +
                     "Pelaajan " + pelaaja.getNimi() + " pelitilin saldo: " + pelaaja.getSaldo() + " kolikkoa" + "\n" +
@@ -832,10 +840,10 @@ public class Kayttoliittyma {
             if (input.equals("K")) {
                 pelaaja.setSaldo(pelaaja.getSaldo() - kilpapelinHinta);
                 System.out.println();
-                uusiVetopokeriKilpapeli(pelaaja, kilpapelinHinta);
+                uusiVetopokeriKilpapeli(kilpapelinHinta);
 
             } else if (input.equals("E")) {
-                // Palataan vain takaisin vetopokerin kilpapelivalikkoon.
+                return;
             } else {
                 throw new CustomException("Kelvoton syöte!");
             }
@@ -848,7 +856,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi aloittaa uuden vetopokerin kilpapelin. */
-    private static void uusiVetopokeriKilpapeli(Pelaaja pelaaja, int kilpapelinHinta) {
+    private static void uusiVetopokeriKilpapeli(int kilpapelinHinta) {
 
         pelaaja.setKilpapelinSaldo(kilpapelinHinta);
         String pelimuoto = "kilpapeli";
@@ -858,7 +866,7 @@ public class Kayttoliittyma {
         int jokerienMaara = Collections.frequency(List.of(pelaaja.getVetopokeriParannustenTilat()), true);
         Korttipakka pakka = new Korttipakka(jokerienMaara);
         int nykyinenJako = 1;
-        tallennus(pelaaja);
+        tallennus();
 
         System.out.println("Uusi kilpapeli alkaa.");
         System.out.println("Kilpapelin saldo: " + pelaaja.getKilpapelinSaldo());
@@ -868,20 +876,20 @@ public class Kayttoliittyma {
             System.out.println("--- " + nykyinenJako + ". JAKO ---");
 
             try {
-                vetopokeriAsetaPanos(pelaaja, pelimuoto, pelaaja.getKilpapelinSaldo(), minimipanos, maksimipanos);
-                kilpapeliJaaJaTarkista(pelaaja, pakka);
+                vetopokeriAsetaPanos(pelimuoto, pelaaja.getKilpapelinSaldo(), minimipanos, maksimipanos);
+                kilpapeliJaaJaTarkista(pakka);
 
                 if (pelaaja.getKilpapelinSaldo() < minimipanos && nykyinenJako < jakojenMaara) {
                     tulostaVetopokeriKilpapeliHavio();
-                    vetopokeriKilpapeli(pelaaja);
+                    vetopokeriKilpapeli();
                     break;
                 }
                 System.out.println("----------------------------------");
                 System.out.println();
 
                 if (nykyinenJako == jakojenMaara) {
-                    paataVetopokeriKilpapeli(pelaaja);
-                    vetopokeriKilpapeli(pelaaja);
+                    paataVetopokeriKilpapeli();
+                    vetopokeriKilpapeli();
                 }
                 nykyinenJako++;
 
@@ -900,11 +908,11 @@ public class Kayttoliittyma {
 
 
     /** Metodi suorittaa vetopokerin kilpapelin yhteen jakoon kuuluvat toimenpiteet. */
-    private static void kilpapeliJaaJaTarkista(Pelaaja pelaaja, Korttipakka pakka) {
+    private static void kilpapeliJaaJaTarkista(Korttipakka pakka) {
         String pelimuoto = "kilpapeli";
         pelaaja.jaaUusiKasi(pakka.arvo5korttia());
         pelaaja.tulostaKasi(false);
-        korttienVaihto(pelaaja, pakka, pelimuoto);
+        korttienVaihto(pakka, pelimuoto);
         pelaaja.kadenTarkistus(pelimuoto);
         System.out.println("Pelaajan " + pelaaja.getNimi() + " kilpapelin saldo: " + pelaaja.getKilpapelinSaldo() + " kolikkoa");
         pelaaja.tarkistaSaavutukset();
@@ -925,7 +933,7 @@ public class Kayttoliittyma {
 
     /** Metodi päättää kilpapelin kun lopullinen jakojen määrä on saavutettu ja tulostaa kilpapelin
         tulokset ja mahdolliset avatut saavutukset. */
-    private static void paataVetopokeriKilpapeli(Pelaaja pelaaja) {
+    private static void paataVetopokeriKilpapeli() {
         System.out.println("\nKilpapeli on päättynyt.");
         System.out.println("Pelaajan " + pelaaja.getNimi() + " lopulliset pisteet: " + pelaaja.getKilpapelinSaldo() + "\n");
         pelaaja.tarkistaKilpapelinSaavutukset(pelaaja.getKilpapelinSaldo());
@@ -944,7 +952,7 @@ public class Kayttoliittyma {
 
 
     /** Metodi tulostaa pelaajan nähtäväksi hänen vetopokerin kilpapelin 10 parasta tulosta.  */
-    private static void tulostaVetopokeriKilpapelinTulostaulu(Pelaaja pelaaja) {
+    private static void tulostaVetopokeriKilpapelinTulostaulu() {
         System.out.println();
         System.out.println("Pelaajan " + pelaaja.getNimi() + " vetopokerin kilpapelin TOP-10 tulokset:");
         int tulostenMaara = pelaaja.getKilpapelinTulokset().size();
@@ -1034,7 +1042,7 @@ public class Kayttoliittyma {
 
     /** Metodi suorittaa pelaajan valitsemat toimenpiteet vetopokerin parannuskaupassa käyttämällä
         apunaan VetopokeriParannusKauppa-luokkaa. */
-    private static void vetopokeriParannukset(Pelaaja pelaaja) {
+    private static void vetopokeriParannukset() {
 
         boolean uudestaan = true;
         while(uudestaan) {
@@ -1047,14 +1055,14 @@ public class Kayttoliittyma {
                     kauppa.parannuksenOsto();
 
                 } else if (input.equals("T")) {
-                    vetopokeriValikko(pelaaja);
+                    vetopokeriValikko();
                     uudestaan = false;
 
                 } else {
                     throw new CustomException("Kelvoton syöte!");
                 }
 
-                tallennus(pelaaja);
+                tallennus();
 
             } catch (CustomException e) {
                 System.out.println("Virhe! " + e.getMessage());
@@ -1085,7 +1093,7 @@ public class Kayttoliittyma {
 
     /** Metodi mahdollistaa kolikoiden rajattoman tallettamisen pelaajan tilille. Kutsuakseen
         metodia pelaajan täytyy tietää salainen numeroyhdistelmä ja paikka johon se tulee syöttää. */
-    private static void talletusHuijaus(Pelaaja pelaaja) throws CustomException {
+    private static void talletusHuijaus() throws CustomException {
         System.out.print("Talletettavien kolikoiden määrä: ");
         int maara = Integer.parseInt(tekstiSyote());
         if (maara >= 0) {

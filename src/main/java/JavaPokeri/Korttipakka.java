@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Random;
 
 class Korttipakka {
-    private final ArrayList<Kortti> pakka;
+    private final ArrayList<Kortti> PAKKA;
 
     public Korttipakka(int jokerienMaara) {
-        pakka = luoPakka(jokerienMaara);
+        PAKKA = luoPakka(jokerienMaara);
     }
 
     private void lisaaKortti(ArrayList<Kortti> pakka, Maa maa, Arvo arvo) {
@@ -41,7 +41,7 @@ class Korttipakka {
         ArrayList<Kortti> kasi = new ArrayList<>();
         Random r = new Random();
         for(int i=0; i<5; i++) {
-            int arvottu = r.nextInt(pakka.size());
+            int arvottu = r.nextInt(PAKKA.size());
             kasi.add(getKortti(arvottu));
             poistaKortti(arvottu);
         }
@@ -52,21 +52,21 @@ class Korttipakka {
         ja samalla poistaa sen pakasta. */
     Kortti nostaUusiKortti() {
         Random r = new Random();
-        int arvottu = r.nextInt(pakka.size());
+        int arvottu = r.nextInt(PAKKA.size());
         return poistaKortti(arvottu);
     }
 
     @Override
     public String toString() {
-        return "Korttipakka:\n" + pakka;
+        return "Korttipakka:\n" + PAKKA;
     }
 
     Kortti getKortti(int i) {
-        return pakka.get(i);
+        return PAKKA.get(i);
     }
 
     Kortti poistaKortti(int i) {
-        return pakka.remove(i);
+        return PAKKA.remove(i);
     }
 
 }
